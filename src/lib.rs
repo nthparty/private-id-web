@@ -14,6 +14,7 @@ extern {
 }
 
 #[wasm_bindgen]
-pub fn greet() {
+pub fn greet(a: &str) -> String {
     alert("Hello, privateid!");
+    format!("Hello, {}!", a)
 }
