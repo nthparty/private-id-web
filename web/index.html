@@ -6,9 +6,19 @@
   <body>
     <script type="text/javascript" src="privateid.js" type="module"></script>
     <script type="text/javascript">
-      var greet;
+      var privateid;
       wasm_bindgen('./privateid_bg.wasm').then(function () {
-        greet = wasm_bindgen.greet;
+        if (!(
+          String(
+            wasm_bindgen.permute([9, 8, 7], [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])) === String(
+            [10, 9, 8, 4, 5, 6, 7, 3, 2, 1]
+          )
+        )) {
+          throw new Error("Rust code returned an unexpected result.")
+        } else {
+          console.log("Ready.");
+        }
+        privateid = {...wasm_bindgen};
       });
     </script>
   </body>

@@ -28,10 +28,11 @@ fn u32_to_usize(mut v: Vec<u32>) -> Vec<usize> {
 }
 
 #[wasm_bindgen]
-pub fn permute(a: Vec<u32>) -> Array {
+pub fn permute(p: Vec<u32>, a: Vec<u32>) -> Array {
     let mut items: Vec<usize> = u32_to_usize(a);
-    
-    common::permutations::permute(&vec![2, 1, 0], &mut items);
+    let permutation = u32_to_usize(p);
+
+    common::permutations::permute(&permutation, &mut items);
 
     Array!(usize_to_u32(items))
 }
