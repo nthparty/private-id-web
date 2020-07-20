@@ -5,5 +5,11 @@
   </head>
   <body>
     <script type="text/javascript" src="privateid.js" type="module"></script>
+    <script type="text/javascript">
+      var greet;
+      wasm_bindgen('./privateid_bg.wasm').then(function () {
+        greet = wasm_bindgen.greet;
+      });
+    </script>
   </body>
 </html>
