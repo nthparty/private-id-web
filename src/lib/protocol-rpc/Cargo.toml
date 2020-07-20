@@ -9,13 +9,13 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[[bin]]
-name = "cross-psi-server"
-path = "src/rpc/cross-psi/server.rs"
-
-[[bin]]
-name = "cross-psi-client"
-path = "src/rpc/cross-psi/client.rs"
+# [[bin]]
+# name = "cross-psi-server"
+# path = "src/rpc/cross-psi/server.rs"
+#
+# [[bin]]
+# name = "cross-psi-client"
+# path = "src/rpc/cross-psi/client.rs"
 
 [[bin]]
 name = "private-id-server"
@@ -25,13 +25,13 @@ path = "src/rpc/private-id/server.rs"
 name = "private-id-client"
 path = "src/rpc/private-id/client.rs"
 
-[[bin]]
-name = "pjc-server"
-path = "src/rpc/pjc/server.rs"
-
-[[bin]]
-name = "pjc-client"
-path = "src/rpc/pjc/client.rs"
+# [[bin]]
+# name = "pjc-server"
+# path = "src/rpc/pjc/server.rs"
+#
+# [[bin]]
+# name = "pjc-client"
+# path = "src/rpc/pjc/client.rs"
 
 [lib]
 name = "rpc"

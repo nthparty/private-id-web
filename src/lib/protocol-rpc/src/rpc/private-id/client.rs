@@ -146,7 +146,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             "private-id".to_string(),
         ) {
             RpcClient::PrivateId(x) => x,
-            _ => panic!("wrong client"),
+            // _ => panic!("wrong client"),
         }
     };
 
