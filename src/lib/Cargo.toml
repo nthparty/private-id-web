@@ -1,0 +1,14 @@
+[workspace]
+
+members = [
+    "common",
+    "crypto",
+    "protocol",
+    "protocol-rpc"
+]
+
+[profile.release]
+debug = false
+
+[profile.bench]
+debug = true

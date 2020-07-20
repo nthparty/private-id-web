@@ -1,0 +1,9 @@
+
+// MIT License
+
+syntax = "proto3";
+package common;
+
+message Payload {
+    repeated bytes payload = 1;
+}
