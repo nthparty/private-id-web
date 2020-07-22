@@ -9,24 +9,12 @@ pub mod gen_private_id {
     tonic::include_proto!("privateid");
 }
 
-// pub mod gen_crosspsi {
-//     tonic::include_proto!("crosspsi");
-// }
-//
-// pub mod gen_pjc {
-//     tonic::include_proto!("pjc");
-// }
-
 pub mod streaming;
 
-// use gen_crosspsi::cross_psi_client::CrossPsiClient;
-// use gen_pjc::pjc_client::PjcClient;
 use gen_private_id::private_id_client::PrivateIdClient;
 use tonic::transport::Channel;
 pub enum RpcClient {
     PrivateId(PrivateIdClient<Channel>),
-    // CrossPsi(CrossPsiClient<Channel>),
-    // Pjc(PjcClient<Channel>),
 }
 
 use crypto::{/*he::BigIntWrapper, */prelude::*};

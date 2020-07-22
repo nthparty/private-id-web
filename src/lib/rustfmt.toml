@@ -1,10 +1,7 @@
 edition = "2018"
-unstable_features = true
+unstable_features = false
 comment_width = 100
 merge_imports = true
 use_field_init_shorthand = true
 wrap_comments = true
-ignore = [  # Ignore generated files.
-  "./protocol-rpc/src/proto/stub_gen_cross_psi.rs",
-  "./protocol-rpc/src/proto/stub_gen_private_id.rs",
-]
+ignore = [ "./protocol-rpc/src/proto/stub_gen_private_id.rs" ]  # Ignore generated files.

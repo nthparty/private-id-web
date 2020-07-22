@@ -22,7 +22,6 @@ use tonic::transport::{ClientTlsConfig, Endpoint};
 use crate::{
     connect::tls,
     proto::{
-        // gen_crosspsi::cross_psi_client::CrossPsiClient, gen_pjc::pjc_client::PjcClient,
         gen_private_id::private_id_client::PrivateIdClient, RpcClient,
     },
 };
@@ -116,8 +115,6 @@ pub fn create_client(
                     .await
                     .map(|conn| match client_name.as_str() {
                         "private-id" => RpcClient::PrivateId(PrivateIdClient::new(conn)),
-                        // "cross-psi" => RpcClient::CrossPsi(CrossPsiClient::new(conn)),
-                        // "pjc" => RpcClient::Pjc(PjcClient::new(conn)),
                         _ => panic!("wrong client"),
                     })
             } else {
@@ -125,10 +122,6 @@ pub fn create_client(
                     "private-id" => Ok(RpcClient::PrivateId(
                         PrivateIdClient::connect(__uri).await.unwrap(),
                     )),
-                    // "cross-psi" => Ok(RpcClient::CrossPsi(
-                    //     CrossPsiClient::connect(__uri).await.unwrap(),
-                    // )),
-                    // "pjc" => Ok(RpcClient::Pjc(PjcClient::connect(__uri).await.unwrap())),
                     _ => panic!("wrong client"),
                 }
             }
