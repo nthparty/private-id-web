@@ -1,6 +1,3 @@
-
-// MIT License
-
 extern crate common;
 extern crate crypto;
 extern crate futures;

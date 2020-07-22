@@ -1,6 +1,3 @@
-
-// MIT License
-
 #![forbid(unsafe_code)]
 #![crate_name = "common"]
 

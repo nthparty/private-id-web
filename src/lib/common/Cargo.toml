@@ -1,14 +1,8 @@
-# MIT License
 [package]
 name = "common"
 version = "0.1.0"
 authors = []
 edition = "2018"
-
-[[bin]]
-name = "datagen"
-path = "datagen/datagen.rs"
-
 
 [dependencies]
 log = "0.4"
