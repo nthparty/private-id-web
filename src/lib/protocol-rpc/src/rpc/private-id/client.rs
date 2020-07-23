@@ -31,6 +31,18 @@ mod rpc_client;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
 
+    let input = r#"[
+      "sanderswilliam@watkins.org", "kim97@hotmail.com", "danielhernandez@hotmail.com",
+      "bryanttanner@hotmail.com", "xmeza@white-ramsey.com", "marshallaustin@hotmail.com",
+      "robinfreeman@yahoo.com", "portermark@yahoo.com", "david97@gmail.com",
+      "showard@williamson-payne.net", "mclaughlintina@reynolds.com", "paul61@gmail.com",
+      "walshkenneth@richard.org", "tyler77@yahoo.com", "willisalison@clark-williams.com",
+      "joanna88@gmail.com", "rhernandez@thompson.com", "allentonya@barr.com",
+      "miguel23@taylor-gilbert.com", "jacobparsons@reilly-ward.com", "bankscynthia@gmail.com",
+      "rebeccajenkins@gmail.com", "nancyfields@irwin-sanders.com", "woodcourtney@hotmail.com",
+      "xcombs@yahoo.com", "erik44@gmail.com"
+    ]"#;
+
     let global_timer = timer::Timer::new_silent("global");
     let input_path = "example/email_partner.csv";
     let input_with_headers = false;
@@ -74,7 +86,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 3. Generate permute pattern
     // 4. Permute data and hash
     partner_protocol
-        .load_data(&input_path.to_string(), input_with_headers)
+        .load_data(input, input_with_headers)
         .unwrap();
     partner_protocol.gen_permute_pattern().unwrap();
     let u_partner = partner_protocol.permute_hash_to_bytes().unwrap();

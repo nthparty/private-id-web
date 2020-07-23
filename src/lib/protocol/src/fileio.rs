@@ -12,7 +12,6 @@ use std::{
 
 use crate::shared::TFeatures;
 use common::{timer};
-use serde_json::json;
 use serde_json::{Value};
 
 /// load text and update the protocol
@@ -108,33 +107,19 @@ impl KeyedCSV {
     }
 }
 
-pub fn load_data(data: Arc<RwLock<KeyedCSV>>, path: &str, has_headers: bool) {
+pub fn load_data(data: Arc<RwLock<KeyedCSV>>, json_table: &str, has_headers: bool) {
     let t = timer::Timer::new_silent("load");
 
-    let address_book_json = r#"[
-      "sanderswilliam@watkins.org", "kim97@hotmail.com", "danielhernandez@hotmail.com",
-      "bryanttanner@hotmail.com", "xmeza@white-ramsey.com", "marshallaustin@hotmail.com",
-      "robinfreeman@yahoo.com", "portermark@yahoo.com", "david97@gmail.com",
-      "showard@williamson-payne.net", "mclaughlintina@reynolds.com", "paul61@gmail.com",
-      "walshkenneth@richard.org", "tyler77@yahoo.com", "willisalison@clark-williams.com",
-      "joanna88@gmail.com", "rhernandez@thompson.com", "allentonya@barr.com",
-      "miguel23@taylor-gilbert.com", "jacobparsons@reilly-ward.com", "bankscynthia@gmail.com",
-      "rebeccajenkins@gmail.com", "nancyfields@irwin-sanders.com", "woodcourtney@hotmail.com",
-      "xcombs@yahoo.com", "erik44@gmail.com"
-    ]"#;
+    // Read json object from dynamic str into the expected Vec<Vec> form (previously from a CSV)
+    let table: Value = serde_json::from_str(json_table).unwrap();
+    let table: &Vec<Value> = table.as_array().unwrap();
+    let table_len = table.len();
 
-    // Parse the string of data into serde_json::Value.
-    let address_book_value: Value = serde_json::from_str(address_book_json).unwrap();
-    let address_book = address_book_value.as_array().unwrap();
-
-    let mut lines: Vec<Vec<String>> = vec![vec!["".to_string()]; address_book.len()];  // -OR- files::read_csv_as_strings(path)
-    for (row_num, row) in address_book.iter().enumerate() {
+    let mut lines: Vec<Vec<String>> = vec![vec!["".to_string()]; table.len()];  // -OR- files::read_csv_as_strings(path)
+    for (row_num, row) in table.iter().enumerate() {
         println!("Row #{}\t{}", row_num, row);
         lines[row_num] = vec![row.as_str().unwrap().to_string()];
     }
-
-    let text_len = lines.len();
-    println!("{}", json!(lines));
 
     if let Ok(mut wguard) = data.write() {
         if wguard.records.is_empty() {
@@ -151,14 +136,13 @@ pub fn load_data(data: Arc<RwLock<KeyedCSV>>, path: &str, has_headers: bool) {
             }
             let keys_len = wguard.records.len();
             info!(
-                "Read {} lines from {} (dedup: {} lines)",
-                text_len,
-                path,
-                text_len - keys_len
+                "Read {} lines from json (dedup: {} lines)",
+                table_len,
+                table_len - keys_len
             );
         } else {
             warn!("Attempted to run the protocol after the text was already initialized.")
         }
-        t.qps("text read", text_len);
+        t.qps("rows read", table_len);
     }
 }
