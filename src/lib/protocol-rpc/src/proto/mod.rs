@@ -17,34 +17,10 @@ pub enum RpcClient {
     PrivateId(PrivateIdClient<Channel>),
 }
 
-use crypto::{/*he::BigIntWrapper, */prelude::*};
+use crypto::{prelude::*};
 
 pub mod from {
     use super::{common::*, *};
-
-    // impl From<&EncryptionKey> for common::Payload {
-    //     fn from(key: &EncryptionKey) -> Self {
-    //         common::Payload {
-    //             payload: vec![
-    //                 bincode::serialize(&BigIntWrapper { raw: key.n.clone() }).unwrap(),
-    //                 bincode::serialize(&BigIntWrapper {
-    //                     raw: key.nn.clone(),
-    //                 })
-    //                 .unwrap(),
-    //             ],
-    //         }
-    //     }
-    // }
-    //
-    // impl From<&Payload> for EncryptionKey {
-    //     fn from(pld: &Payload) -> Self {
-    //         assert_eq!(pld.payload.len(), 2);
-    //         EncryptionKey {
-    //             n: (bincode::deserialize::<BigIntWrapper>(&pld.payload[0]).unwrap()).raw,
-    //             nn: (bincode::deserialize::<BigIntWrapper>(&pld.payload[1]).unwrap()).raw,
-    //         }
-    //     }
-    // }
 
     impl From<&TPayload> for common::Payload {
         fn from(payload: &TPayload) -> Self {
@@ -62,23 +38,6 @@ pub mod from {
                 .iter()
                 .map(|x| ByteBuffer { buffer: x.to_vec() })
                 .collect::<TPayload>()
-        }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::{common::*, *};
-
-    #[test]
-    fn test_ser_dsr_he_enc_key() {
-        for _ in 1..10 {
-            let k1 = EncryptionKey {
-                n: BigInt::zero(),
-                nn: BigInt::zero(),
-            };
-            let k2 = EncryptionKey::from(&Payload::from(&k1));
-            assert_eq!(k1, k2);
         }
     }
 }
