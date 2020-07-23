@@ -11,7 +11,9 @@ use std::{
 };
 
 use crate::shared::TFeatures;
-use common::{files, timer};
+use common::{timer};
+use serde_json::json;
+use serde_json::{Value};
 
 /// load text and update the protocol
 pub fn load_data_with_features<T>(
@@ -109,8 +111,30 @@ impl KeyedCSV {
 pub fn load_data(data: Arc<RwLock<KeyedCSV>>, path: &str, has_headers: bool) {
     let t = timer::Timer::new_silent("load");
 
-    let mut lines = files::read_csv_as_strings(path);
+    let address_book_json = r#"[
+      "sanderswilliam@watkins.org", "kim97@hotmail.com", "danielhernandez@hotmail.com",
+      "bryanttanner@hotmail.com", "xmeza@white-ramsey.com", "marshallaustin@hotmail.com",
+      "robinfreeman@yahoo.com", "portermark@yahoo.com", "david97@gmail.com",
+      "showard@williamson-payne.net", "mclaughlintina@reynolds.com", "paul61@gmail.com",
+      "walshkenneth@richard.org", "tyler77@yahoo.com", "willisalison@clark-williams.com",
+      "joanna88@gmail.com", "rhernandez@thompson.com", "allentonya@barr.com",
+      "miguel23@taylor-gilbert.com", "jacobparsons@reilly-ward.com", "bankscynthia@gmail.com",
+      "rebeccajenkins@gmail.com", "nancyfields@irwin-sanders.com", "woodcourtney@hotmail.com",
+      "xcombs@yahoo.com", "erik44@gmail.com"
+    ]"#;
+
+    // Parse the string of data into serde_json::Value.
+    let address_book_value: Value = serde_json::from_str(address_book_json).unwrap();
+    let address_book = address_book_value.as_array().unwrap();
+
+    let mut lines: Vec<Vec<String>> = vec![vec!["".to_string()]; address_book.len()];  // -OR- files::read_csv_as_strings(path)
+    for (row_num, row) in address_book.iter().enumerate() {
+        println!("Row #{}\t{}", row_num, row);
+        lines[row_num] = vec![row.as_str().unwrap().to_string()];
+    }
+
     let text_len = lines.len();
+    println!("{}", json!(lines));
 
     if let Ok(mut wguard) = data.write() {
         if wguard.records.is_empty() {
@@ -133,7 +157,7 @@ pub fn load_data(data: Arc<RwLock<KeyedCSV>>, path: &str, has_headers: bool) {
                 text_len - keys_len
             );
         } else {
-            warn!("Attempted to run the protocol after the text was already initaialised")
+            warn!("Attempted to run the protocol after the text was already initialized.")
         }
         t.qps("text read", text_len);
     }
