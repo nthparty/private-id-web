@@ -5,13 +5,21 @@ extern crate private_id_protocol as protocol;
 
 use wasm_bindgen::prelude::*;
 use super::js::*;
+use serde_json::json;
 
 #[wasm_bindgen]
 pub fn test() -> String {
     // let &mut input_with_headers;
     // let var_name = protocol::private_id::partner::PartnerPrivateId::load_data("", input_with_headers);
     // protocol::private_id::partner::PartnerPrivateId::new();
-    "Hello".to_string()
+    let hello = "Hello".to_string();
+
+    format!("{}", json!(
+        vec!([
+            vec!([hello.clone(), hello.clone(), hello.clone()]),
+            vec!([hello.clone(), hello.clone(), hello.clone()])
+        ])
+    ))
 }
 
 #[wasm_bindgen]

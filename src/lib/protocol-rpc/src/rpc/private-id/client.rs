@@ -11,7 +11,6 @@ extern crate rpc;
 extern crate tokio_rustls;
 extern crate tonic;
 
-use clap::{App, Arg, ArgGroup};
 use log::info;
 use tonic::Request;
 
@@ -32,110 +31,23 @@ mod rpc_client;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
 
-    // todo: move matches outside, or move to build.rs
-    let matches = App::new("Private Id Client")
-        .version("0.1")
-        .about("Private Id Protocol")
-        .args(&[
-            Arg::with_name("company")
-                .long("company")
-                .short("c")
-                .takes_value(true)
-                .required(true)
-                .help("Host path to connect to, ex: 0.0.0.0:3001"),
-            Arg::with_name("input")
-                .long("input")
-                .short("i")
-                .default_value("input.csv")
-                .help("Path to input file with keys"),
-            Arg::with_name("input-with-headers")
-                .long("input-with-headers")
-                .takes_value(false)
-                .help("Indicates if the input CSV contains headers"),
-            Arg::with_name("output")
-                .long("output")
-                .short("o")
-                .takes_value(true)
-                .help("Path to output file, output format: private-id, option(key)"),
-            Arg::with_name("stdout")
-                .long("stdout")
-                .short("u")
-                .takes_value(false)
-                .help("Prints the output to stdout rather than file"),
-            Arg::with_name("no-tls")
-                .long("no-tls")
-                .takes_value(false)
-                .help("Turns tls off"),
-            Arg::with_name("tls-dir")
-                .long("tls-dir")
-                .takes_value(true)
-                .help(
-                    "Path to directory with files with key, cert and ca.pem file\n
-                    client: client.key, client.pem, ca.pem \n
-                    server: server.key, server.pem, ca.pem \n
-                ",
-                ),
-            Arg::with_name("tls-key")
-                .long("tls-key")
-                .takes_value(true)
-                .requires("tls-cert")
-                .requires("tls-ca")
-                .help("Path to tls key (non-encrypted)"),
-            Arg::with_name("tls-cert")
-                .long("tls-cert")
-                .takes_value(true)
-                .requires("tls-key")
-                .requires("tls-ca")
-                .help(
-                    "Path to tls certificate (pem format), SINGLE cert, \
-                     NO CHAINING, required by client as well",
-                ),
-            Arg::with_name("tls-ca")
-                .long("tls-ca")
-                .takes_value(true)
-                .requires("tls-key")
-                .requires("tls-cert")
-                .help("Path to root CA certificate issued cert and keys"),
-            Arg::with_name("tls-domain")
-                .long("tls-domain")
-                .takes_value(true)
-                .help("Override TLS domain for SSL cert (if host is IP)"),
-            Arg::with_name("not-matched-value")
-                .long("not-matched-value")
-                .takes_value(true)
-                .help("Override the default placeholder value for non-matched records"),
-            Arg::with_name("use-row-numbers")
-                .long("use-row-numbers")
-                .takes_value(false)
-                .help("Indicates if the output would consist row numbers instead of encrypted IDs"),
-        ])
-        .groups(&[
-            ArgGroup::with_name("tls")
-                .args(&["no-tls", "tls-dir", "tls-key"])
-                .required(true),
-            ArgGroup::with_name("out")
-                .args(&["output", "stdout"])
-                .required(true),
-        ])
-        .get_matches();
-
     let global_timer = timer::Timer::new_silent("global");
-    let input_path = matches.value_of("input").unwrap_or_else(|| "input.csv");
-    let input_with_headers = matches.is_present("input-with-headers");
-    let output_path = matches.value_of("output");
-    let na_val = matches.value_of("not-matched-value");
-    let use_row_numbers = matches.is_present("use-row-numbers");
+    let input_path = "example/email_partner.csv";
+    let input_with_headers = false;
+    let output_path: Option<&str> = None;
+    let na_val: Option<&str> = None;
+    let use_row_numbers = true;
 
     let mut client_context = {
-        let no_tls = matches.is_present("no-tls");
-        let host_pre = matches.value_of("company");
-        let tls_dir = matches.value_of("tls-dir");
-        let tls_key = matches.value_of("tls-key");
-        let tls_cert = matches.value_of("tls-cert");
-        let tls_ca = matches.value_of("tls-ca");
-        let tls_domain = matches.value_of("tls-domain");
+        let no_tls = true;
+        let host_pre: Option<&str> = Option::Some("localhost:3001");
+        let tls_dir: Option<&str> = None;
+        let tls_key: Option<&str> = None;
+        let tls_cert: Option<&str> = None;
+        let tls_ca: Option<&str> = None;
+        let tls_domain: Option<&str> = None;
 
-        match create_client(
+        let RpcClient::PrivateId(x) = create_client(
             no_tls,
             host_pre,
             tls_dir,
@@ -144,10 +56,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             tls_ca,
             tls_domain,
             "private-id".to_string(),
-        ) {
-            RpcClient::PrivateId(x) => x,
-            // _ => panic!("wrong client"),
-        }
+        );
+        x
     };
 
     info!("Input path: {}", input_path);
