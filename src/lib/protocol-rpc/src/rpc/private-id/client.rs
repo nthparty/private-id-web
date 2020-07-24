@@ -31,6 +31,8 @@ mod rpc_client;
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
 
+    let not_matched_val: Option<&str> = Option::Some("Unknown");
+    let use_row_numbers = true;
     let input = r#"[
       "sanderswilliam@watkins.org", "kim97@hotmail.com", "danielhernandez@hotmail.com",
       "bryanttanner@hotmail.com", "xmeza@white-ramsey.com", "marshallaustin@hotmail.com",
@@ -44,49 +46,27 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     ]"#;
 
     let global_timer = timer::Timer::new_silent("global");
-    let input_path = "example/email_partner.csv";
-    let input_with_headers = false;
-    let output_path: Option<&str> = None;
-    let na_val: Option<&str> = None;
-    let use_row_numbers = true;
 
-    let mut client_context = {
-        let no_tls = true;
-        let host_pre: Option<&str> = Option::Some("localhost:3001");
-        let tls_dir: Option<&str> = None;
-        let tls_key: Option<&str> = None;
-        let tls_cert: Option<&str> = None;
-        let tls_ca: Option<&str> = None;
-        let tls_domain: Option<&str> = None;
-
-        let RpcClient::PrivateId(x) = create_client(
-            no_tls,
-            host_pre,
-            tls_dir,
-            tls_key,
-            tls_cert,
-            tls_ca,
-            tls_domain,
-            "private-id".to_string(),
-        );
-        x
-    };
-
-    info!("Input path: {}", input_path);
-    if output_path.is_some() {
-        info!("Output path: {}", output_path.unwrap());
-    } else {
-        info!("Output view to stdout (first 10 items)");
-    }
+    let host_pre: &str = "localhost:3001";
+    let RpcClient::PrivateId(mut client_context) = create_client(
+        true,
+        Option::Some(host_pre),
+        None,
+        None,
+        None,
+        None,
+        None,
+        "private-id".to_string(),
+    );
 
     // 1. Create partner protocol instance
     let partner_protocol = PartnerPrivateId::new();
 
     // 2. Load partner's data
-    // 3. Generate permute pattern
+    // 3. Generate permutation pattern
     // 4. Permute data and hash
     partner_protocol
-        .load_data(input, input_with_headers)
+        .load_data(input, false)
         .unwrap();
     partner_protocol.gen_permute_pattern().unwrap();
     let u_partner = partner_protocol.permute_hash_to_bytes().unwrap();
@@ -221,13 +201,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     .unwrap();
 
     // 15. Create partner's ID spine and print
-    partner_protocol.create_id_map(v_partner, s_prime_company, na_val);
-    match output_path {
-        Some(p) => partner_protocol
-            .save_id_map(&String::from(p), input_with_headers, use_row_numbers)
-            .unwrap(),
-        None => partner_protocol.print_id_map(usize::MAX, input_with_headers, use_row_numbers),
-    }
+    partner_protocol.create_id_map(v_partner, s_prime_company, not_matched_val);
+    partner_protocol.print_id_map(usize::MAX, false, use_row_numbers);
 
     // 16. Create company's ID spine and print
     rpc_client::reveal(&mut client_context).await?;

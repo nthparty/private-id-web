@@ -25,7 +25,7 @@ use rpc::proto::{
 
 pub struct PrivateIdService {
     protocol: CompanyPrivateId,
-    input_path: String,
+    input_json: String,
     output_path: Option<String>,
     input_with_headers: bool,
     na_val: Option<String>,
@@ -35,7 +35,7 @@ pub struct PrivateIdService {
 
 impl PrivateIdService {
     pub fn new(
-        input_path: &str,
+        input_json: &str,
         output_path: Option<&str>,
         input_with_headers: bool,
         na_val: Option<&str>,
@@ -43,7 +43,7 @@ impl PrivateIdService {
     ) -> PrivateIdService {
         PrivateIdService {
             protocol: CompanyPrivateId::new(),
-            input_path: String::from(input_path),
+            input_json: String::from(input_json),
             output_path: output_path.map(String::from),
             input_with_headers,
             na_val: na_val.map(String::from),
@@ -66,7 +66,7 @@ impl PrivateId for PrivateIdService {
             .extra_label("init")
             .build();
         self.protocol
-            .load_data(&self.input_path, self.input_with_headers);
+            .load_data(&self.input_json, self.input_with_headers);
         Ok(Response::new(ServiceResponse {
             ack: Some(Ack::InitAck(InitAck {})),
         }))

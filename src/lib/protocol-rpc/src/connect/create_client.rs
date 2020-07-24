@@ -99,7 +99,7 @@ pub fn create_client(
 
     let mut retry_count: u32 = 0;
 
-    let context = retry::retry(retry::delay::Fixed::from_millis(3000), move || {
+    let context = retry::retry(retry::delay::Fixed::from_millis(30000), move || {
         if retry_count == 0 {
             info!("Connecting to host: {}", host);
         } else {

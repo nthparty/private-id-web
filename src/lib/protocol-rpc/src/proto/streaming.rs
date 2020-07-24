@@ -23,8 +23,11 @@ pub fn send_data(data: TPayload) -> Request<impl Stream<Item = Payload>> {
     let chunk_count = chunks_count(data.as_ref());
     let s = stream! {
         for chunk in data.chunks(chunk_count).into_iter() {
-            let pl = chunk.iter().map(|x| x.buffer.clone()).collect::<Vec<Vec<u8>>>();
-            yield Payload { payload: pl }
+            let pl: Vec<Vec<u8>> = chunk.iter().map(|x| x.buffer.clone()).collect::<Vec<Vec<u8>>>();
+            println!("{:?}", pl);
+            yield Payload {
+                payload: pl
+            }
          }
     };
     Request::new(s)

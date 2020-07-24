@@ -45,11 +45,12 @@ pub async fn send(
     name: String,
     rpc: &mut PrivateIdClient<Channel>,
 ) -> Result<Response<ServiceResponse>, Status> {
+    let request = send_data(data);
     match name.as_str() {
-        "u_partner" => rpc.send_u_partner(send_data(data)).await,
-        "e_company" => rpc.send_e_company(send_data(data)).await,
-        "v_company" => rpc.send_v_company(send_data(data)).await,
-        "s_double_prime_partner" => rpc.send_s_double_prime_partner(send_data(data)).await,
+        "u_partner" => rpc.send_u_partner(request).await,
+        "e_company" => rpc.send_e_company(request).await,
+        "v_company" => rpc.send_v_company(request).await,
+        "s_double_prime_partner" => rpc.send_s_double_prime_partner(request).await,
         _ => panic!("wrong data type"),
     }
 }

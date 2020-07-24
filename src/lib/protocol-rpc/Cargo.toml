@@ -17,6 +17,10 @@ path = "src/rpc/private-id/server.rs"
 name = "private-id-client"
 path = "src/rpc/private-id/client.rs"
 
+[[bin]]
+name = "private-id-no-rpc"
+path = "src/rpc/private-id/no_rpc.rs"
+
 [lib]
 name = "rpc"
 path = "src/lib.rs"
@@ -51,6 +55,7 @@ indicatif = "0.13.0"
 ctrlc = "3.1.3"
 retry = "0.5.1"
 bincode = "1.2.1"
+async-std = "1.6.2"
 
 
 [build-dependencies]

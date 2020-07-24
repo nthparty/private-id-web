@@ -57,8 +57,8 @@ impl CompanyPrivateId {
         }
     }
 
-    pub fn load_data(&self, path: &str, input_with_headers: bool) {
-        load_data(self.plain_data.clone(), path, input_with_headers);
+    pub fn load_data(&self, json: &str, input_with_headers: bool) {
+        load_data(self.plain_data.clone(), json, input_with_headers);
         fill_permute(
             self.permutation.clone(),
             (*self.plain_data.clone().read().unwrap()).records.len(),
