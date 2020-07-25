@@ -1,4 +1,3 @@
-#[macro_use]
 extern crate log;
 
 extern crate common;
@@ -16,11 +15,8 @@ use common::timer;
 use crypto::prelude::TPayload;
 use protocol::private_id::{partner::PartnerPrivateId, traits::*};
 
-mod rpc_client;
-mod rpc_server;
 use protocol::private_id::{company::CompanyPrivateId, traits::CompanyPrivateIdProtocol};
 use crypto::spoint::ByteBuffer;
-use rpc::proto::streaming::{write_to_stream, read_from_stream};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -122,7 +118,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 12. Get data that partner has but company doesn't
     let mut s_prime_partner = TPayload::new();
     // rpc_client::recv(&mut s_prime_partner);  // tag name: "s_prime_partner".to_string()
-    let s_prime_partner = /*
+    s_prime_partner = /*
         receive(*/(company_protocol.get_set_diff_output("s_prime_partner".to_string()))/*)
                 */.unwrap();
 
@@ -130,14 +126,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 13. Get data that company has but partner doesn't
     let mut s_prime_company = TPayload::new();
     // rpc_client::recv(&mut s_prime_company);  // tag name: "s_prime_company".to_string()
-    let s_prime_company = /*
+    s_prime_company = /*
         receive(*/(company_protocol.get_set_diff_output("s_prime_company".to_string()))/*)
                 */.unwrap();
 
     // 14. Encrypt and send back data that partner has company doesn't.  Generates s_double_prime_partner in-place
     let mut s_prime_partner= partner_protocol.encrypt(s_prime_partner).unwrap();
     // rpc_client::send(partner_protocol.encrypt(s_prime_partner).unwrap());  // tag name: "s_double_prime_partner".to_string()
-    let s_prime_partner = /*receive(*/(s_prime_partner)/*)*/;
+    s_prime_partner = /*receive(*/(s_prime_partner)/*)*/;
     company_protocol.write_partner_to_id_map(s_prime_partner, not_matched_val).unwrap();
 
     // 15. Create partner's ID spine and print

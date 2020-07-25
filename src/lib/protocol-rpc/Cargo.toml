@@ -9,13 +9,13 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[[bin]]
-name = "private-id-server"
-path = "src/rpc/private-id/server.rs"
-
-[[bin]]
-name = "private-id-client"
-path = "src/rpc/private-id/client.rs"
+#[[bin]]
+#name = "private-id-server"
+#path = "src/rpc/private-id/server.rs"
+#
+#[[bin]]
+#name = "private-id-client"
+#path = "src/rpc/private-id/client.rs"
 
 [[bin]]
 name = "private-id-no-rpc"
