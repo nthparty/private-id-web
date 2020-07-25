@@ -11,30 +11,13 @@ extern crate tokio_rustls;
 extern crate tonic;
 
 use log::info;
-use tonic::{Request, Status, Code};
 
 use common::timer;
 use crypto::prelude::TPayload;
 use protocol::private_id::{partner::PartnerPrivateId, traits::*};
-use rpc::{
-    connect::create_client::create_client,
-    proto::{
-        gen_private_id::{service_response::*, Init, ServiceResponse, Step1Barrier},
-        RpcClient,
-    },
-};
-
-use std::{
-    sync::{
-        atomic::{AtomicBool, Ordering},
-        Arc,
-    },
-    thread, time,
-};
 
 mod rpc_client;
 mod rpc_server;
-use rpc::{connect::create_server::create_server, proto::gen_private_id::private_id_server};
 use protocol::private_id::{company::CompanyPrivateId, traits::CompanyPrivateIdProtocol};
 use crypto::spoint::ByteBuffer;
 use rpc::proto::streaming::{write_to_stream, read_from_stream};
@@ -74,18 +57,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 
 
-
-
-    let service = rpc_server::PrivateIdService::new(
-        company_input,
-        None,
-        false,
-        not_matched_val,
-        use_row_numbers,
-    );
-
-
-
     // 1. Create partner protocol instance
     let partner_protocol = PartnerPrivateId::new();
 
@@ -121,17 +92,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 8. Send partner's data to company
     // let ack_u_partner = rpc_client::send(u_partner);  // tag name: "u_partner".to_string()
     let u_partner = /*receive(*/(u_partner)/*)*/;
-    company_protocol.set_encrypted_partner_keys(u_partner);
+    company_protocol.set_encrypted_partner_keys(u_partner).unwrap();
 
     // 9a. Send company's data back to company
     // let ack_e_company = rpc_client::send(e_company);  // tag name: "e_company".to_string()
     let e_company = /*receive(*/(e_company)/*)*/;
-    company_protocol.set_encrypted_company("e_company".to_string(), e_company);
+    company_protocol.set_encrypted_company("e_company".to_string(), e_company).unwrap();
 
     // 9b. Send company's data back to company
     // let ack_v_company = rpc_client::send(v_company);  // tag name: "v_company".to_string()
     let v_company = /*receive(*/(v_company)/*)*/;
-    company_protocol.set_encrypted_company("v_company".to_string(), v_company);
+    company_protocol.set_encrypted_company("v_company".to_string(), v_company).unwrap();
 
     // let step1_barrier = Step1Barrier {
     //     u_partner_ack: Some(ack_u_partner),
@@ -146,7 +117,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // 11. Calculate symmetric set difference between company and partners data
     // let calculate_set_diff_ack = rpc_client::calculate_set_diff();
-    company_protocol.calculate_set_diff();
+    company_protocol.calculate_set_diff().unwrap();
 
     // 12. Get data that partner has but company doesn't
     let mut s_prime_partner = TPayload::new();
@@ -167,7 +138,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut s_prime_partner= partner_protocol.encrypt(s_prime_partner).unwrap();
     // rpc_client::send(partner_protocol.encrypt(s_prime_partner).unwrap());  // tag name: "s_double_prime_partner".to_string()
     let s_prime_partner = /*receive(*/(s_prime_partner)/*)*/;
-    company_protocol.write_partner_to_id_map(s_prime_partner, not_matched_val);
+    company_protocol.write_partner_to_id_map(s_prime_partner, not_matched_val).unwrap();
 
     // 15. Create partner's ID spine and print
     partner_protocol.create_id_map(v_partner, s_prime_company, not_matched_val);
