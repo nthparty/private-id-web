@@ -11,7 +11,7 @@ extern crate tokio_rustls;
 extern crate tonic;
 
 use log::info;
-use tonic::Request;
+use tonic::{Request, Status, Code};
 
 use common::timer;
 use crypto::prelude::TPayload;
@@ -35,6 +35,9 @@ use std::{
 mod rpc_client;
 mod rpc_server;
 use rpc::{connect::create_server::create_server, proto::gen_private_id::private_id_server};
+use protocol::private_id::{company::CompanyPrivateId, traits::CompanyPrivateIdProtocol};
+use crypto::spoint::ByteBuffer;
+use rpc::proto::streaming::{write_to_stream, read_from_stream};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -69,34 +72,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "greenstephanie@yahoo.com", "showard@williamson-payne.net"
     ]"#;
 
-    let host = "0.0.0.0:3001";
-    let host_pre: &str = "localhost:3001";
-
-    let RpcClient::PrivateId(mut client_context) = create_client(
-        true,
-        Option::Some(host_pre),
-        None,
-        None,
-        None,
-        None,
-        None,
-        "private-id".to_string(),
-    );
-    let (mut server, tx, rx) = create_server(
-        true,
-        None,
-        None,
-        None,
-        None
-    );
 
 
-    let running = Arc::new(AtomicBool::new(true));
-    let r = running.clone();
-    ctrlc::set_handler(move || {
-        r.store(false, Ordering::SeqCst);
-    })
-        .expect("Error setting Ctrl-C handler");
+
 
     let service = rpc_server::PrivateIdService::new(
         company_input,
@@ -106,34 +84,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         use_row_numbers,
     );
 
-    let ks = service.killswitch.clone();
-    let recv_thread = thread::spawn(move || {
-        let sleep_dur = time::Duration::from_millis(1000);
-        while !(ks.load(Ordering::Relaxed)) && running.load(Ordering::Relaxed) {
-            thread::sleep(sleep_dur);
-        }
-
-        info!("Shutting down server ...");
-        tx.send(()).unwrap();
-    });
-
-    info!("Server starting at {}", host);
-
-    let addr = host.parse().unwrap();
-
-    server
-        .add_service(private_id_server::PrivateIdServer::new(service))
-        .serve_with_shutdown(addr, async {
-            rx.await.ok();
-        })
-        .await.unwrap();
-
-    recv_thread.join().unwrap();
-    info!("Bye!");
-    println!("end server_thread");
-
-
-
 
 
     // 1. Create partner protocol instance
@@ -142,150 +92,95 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 2. Load partner's data
     // 3. Generate permutation pattern
     // 4. Permute data and hash
-    partner_protocol
-        .load_data(partner_input, false)
-        .unwrap();
+    partner_protocol.load_data(partner_input, false).unwrap();
     partner_protocol.gen_permute_pattern().unwrap();
     let u_partner = partner_protocol.permute_hash_to_bytes().unwrap();
 
     // 5. Initialize company - this loads company's data and generates its permutation pattern
-    let init_ack = match client_context
-        .initialize(Request::new(Init {}))
-        .await.unwrap()
-        .into_inner()
-        .ack
-        .unwrap()
-    {
-        Ack::InitAck(x) => x,
-        _ => panic!("wrong ack"),
-    };
+    let company_protocol = CompanyPrivateId::new();
+    company_protocol.load_data(company_input, false);
+    // company_protocol.gen_permute_pattern().unwrap();
 
     // 6. Get data from company
-    let mut u_company = TPayload::new();
-    let _ = rpc_client::recv(
-        ServiceResponse {
-            ack: Some(Ack::InitAck(init_ack.clone())),
-        },
-        "u_company".to_string(),
-        &mut u_company,
-        &mut client_context,
-    )
-        .await.unwrap();
+    let mut u_company: Vec<ByteBuffer> = TPayload::new();
+    // rpc_client::recv().await.unwrap();  // tag name: "u_company".to_string()
+
+    let _ = timer::Builder::new()
+        .label("server")
+        .extra_label("recv_u_company")
+        .build();
+    let t = timer::Builder::new().label("u_company").build();
+    let res = company_protocol.get_permuted_keys().unwrap();
+    t.qps(format!("received {}", "u_company").as_str(), res.len());
+
+    u_company = /*receive(*/(res)/*)*/;
 
     // 7. Permute and encrypt data from company with own keys
     let (e_company, v_company) = partner_protocol.encrypt_permute(u_company);
 
     // 8. Send partner's data to company
-    let ack_u_partner =
-        match rpc_client::send(u_partner, "u_partner".to_string(), &mut client_context)
-            .await.unwrap()
-            .into_inner()
-            .ack
-            .unwrap()
-        {
-            Ack::UPartnerAck(x) => x,
-            _ => panic!("wrong ack"),
-        };
+    // let ack_u_partner = rpc_client::send(u_partner);  // tag name: "u_partner".to_string()
+    let u_partner = /*receive(*/(u_partner)/*)*/;
+    company_protocol.set_encrypted_partner_keys(u_partner);
 
     // 9a. Send company's data back to company
-    let ack_e_company =
-        match rpc_client::send(e_company, "e_company".to_string(), &mut client_context)
-            .await.unwrap()
-            .into_inner()
-            .ack
-            .unwrap()
-        {
-            Ack::ECompanyAck(x) => x,
-            _ => panic!("wrong ack"),
-        };
+    // let ack_e_company = rpc_client::send(e_company);  // tag name: "e_company".to_string()
+    let e_company = /*receive(*/(e_company)/*)*/;
+    company_protocol.set_encrypted_company("e_company".to_string(), e_company);
 
     // 9b. Send company's data back to company
-    let ack_v_company =
-        match rpc_client::send(v_company, "v_company".to_string(), &mut client_context)
-            .await.unwrap()
-            .into_inner()
-            .ack
-            .unwrap()
-        {
-            Ack::VCompanyAck(x) => x,
-            _ => panic!("wrong ack"),
-        };
+    // let ack_v_company = rpc_client::send(v_company);  // tag name: "v_company".to_string()
+    let v_company = /*receive(*/(v_company)/*)*/;
+    company_protocol.set_encrypted_company("v_company".to_string(), v_company);
 
-    let step1_barrier = Step1Barrier {
-        u_partner_ack: Some(ack_u_partner),
-        e_company_ack: Some(ack_e_company),
-        v_company_ack: Some(ack_v_company),
-    };
+    // let step1_barrier = Step1Barrier {
+    //     u_partner_ack: Some(ack_u_partner),
+    //     e_company_ack: Some(ack_e_company),
+    //     v_company_ack: Some(ack_v_company),
+    // };
 
     // 10. Receive partner's back from company
     let mut v_partner = TPayload::new();
-    let _ = rpc_client::recv(
-        ServiceResponse {
-            ack: Some(Ack::Step1Barrier(step1_barrier.clone())),
-        },
-        "v_partner".to_string(),
-        &mut v_partner,
-        &mut client_context,
-    )
-        .await.unwrap();
+    // rpc_client::recv(&mut v_partner);  // "v_partner".to_string()
+    v_partner = /*receive(*/(company_protocol.get_encrypted_partner_keys())/*)*/.unwrap();
 
     // 11. Calculate symmetric set difference between company and partners data
-    let calculate_set_diff_ack =
-        match rpc_client::calculate_set_diff(step1_barrier.clone(), &mut client_context)
-            .await.unwrap()
-            .into_inner()
-            .ack
-            .unwrap()
-        {
-            Ack::CalculateSetDiffAck(x) => x,
-            _ => panic!("wrong ack"),
-        };
+    // let calculate_set_diff_ack = rpc_client::calculate_set_diff();
+    company_protocol.calculate_set_diff();
 
     // 12. Get data that partner has but company doesn't
     let mut s_prime_partner = TPayload::new();
-    let _ = rpc_client::recv(
-        ServiceResponse {
-            ack: Some(Ack::CalculateSetDiffAck(calculate_set_diff_ack.clone())),
-        },
-        "s_prime_partner".to_string(),
-        &mut s_prime_partner,
-        &mut client_context,
-    )
-        .await.unwrap();
+    // rpc_client::recv(&mut s_prime_partner);  // tag name: "s_prime_partner".to_string()
+    let s_prime_partner = /*
+        receive(*/(company_protocol.get_set_diff_output("s_prime_partner".to_string()))/*)
+                */.unwrap();
+
 
     // 13. Get data that company has but partner doesn't
     let mut s_prime_company = TPayload::new();
-    let _ = rpc_client::recv(
-        ServiceResponse {
-            ack: Some(Ack::CalculateSetDiffAck(calculate_set_diff_ack.clone())),
-        },
-        "s_prime_company".to_string(),
-        &mut s_prime_company,
-        &mut client_context,
-    )
-        .await.unwrap();
+    // rpc_client::recv(&mut s_prime_company);  // tag name: "s_prime_company".to_string()
+    let s_prime_company = /*
+        receive(*/(company_protocol.get_set_diff_output("s_prime_company".to_string()))/*)
+                */.unwrap();
 
-    // 14. Encrypt and send back data that partner has company doesn't
-    //     Generates s_double_prime_partner in-place
-    let _ = rpc_client::send(
-        partner_protocol.encrypt(s_prime_partner).unwrap(),
-        "s_double_prime_partner".to_string(),
-        &mut client_context,
-    )
-        .await.unwrap()
-        .into_inner()
-        .ack
-        .unwrap();
+    // 14. Encrypt and send back data that partner has company doesn't.  Generates s_double_prime_partner in-place
+    let mut s_prime_partner= partner_protocol.encrypt(s_prime_partner).unwrap();
+    // rpc_client::send(partner_protocol.encrypt(s_prime_partner).unwrap());  // tag name: "s_double_prime_partner".to_string()
+    let s_prime_partner = /*receive(*/(s_prime_partner)/*)*/;
+    company_protocol.write_partner_to_id_map(s_prime_partner, not_matched_val);
 
     // 15. Create partner's ID spine and print
     partner_protocol.create_id_map(v_partner, s_prime_company, not_matched_val);
     partner_protocol.print_id_map(usize::MAX, false, use_row_numbers);
 
     // 16. Create company's ID spine and print
-    rpc_client::reveal(&mut client_context).await.unwrap();
+    // rpc_client::reveal();  // tag name: "reveal"
     global_timer.qps("total time", partner_protocol.get_size());
-    info!("Bye!");
-    println!("end client_thread");
 
+    // Print company's output
+    company_protocol.write_company_to_id_map();
+    company_protocol.print_id_map(u32::MAX as usize, false, use_row_numbers);
+
+    info!("Bye!");
     Ok(())
 }

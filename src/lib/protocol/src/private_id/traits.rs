@@ -37,7 +37,7 @@ pub trait CompanyPrivateIdProtocol {
     fn write_partner_to_id_map(
         &self,
         s_prime_partner_payload: TPayload,
-        na_val: Option<&String>,
+        na_val: Option<&str>,
     ) -> Result<(), ProtocolError>;
 
     fn print_id_map(&self, limit: usize, input_with_headers: bool, use_row_numbers: bool);

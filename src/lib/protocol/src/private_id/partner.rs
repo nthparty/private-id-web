@@ -160,7 +160,7 @@ impl PartnerPrivateIdProtocol for PartnerPrivateId {
                 {
                     let record = plain_data.get_empty_record_with_key(
                         k.to_string(),
-                        na_val.map(String::from).as_ref(),
+                        na_val,
                     );
                     id_map.push(record);
                 }

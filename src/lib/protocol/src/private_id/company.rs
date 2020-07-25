@@ -127,7 +127,7 @@ impl CompanyPrivateIdProtocol for CompanyPrivateId {
     fn write_partner_to_id_map(
         &self,
         s_prime_partner_payload: TPayload,
-        na_val: Option<&String>,
+        na_val: Option<&str>,
     ) -> Result<(), ProtocolError> {
         self.id_map
             .clone()

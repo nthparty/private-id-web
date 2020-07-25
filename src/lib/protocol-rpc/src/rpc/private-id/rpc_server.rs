@@ -24,7 +24,7 @@ use rpc::proto::{
 };
 
 pub struct PrivateIdService {
-    protocol: CompanyPrivateId,
+    pub(crate) protocol: CompanyPrivateId,
     input_json: String,
     output_path: Option<String>,
     input_with_headers: bool,
@@ -213,7 +213,7 @@ impl PrivateId for PrivateIdService {
             .build();
         let mut strm = request.into_inner();
         self.protocol
-            .write_partner_to_id_map(read_from_stream(&mut strm).await?, self.na_val.as_ref())
+            .write_partner_to_id_map(read_from_stream(&mut strm).await?, Option::Some(""))
             .map(|_| {
                 Response::new(ServiceResponse {
                     ack: Some(Ack::SDoublePrimePartnerAck(SDoublePrimePartnerAck {})),

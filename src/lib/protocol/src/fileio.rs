@@ -78,7 +78,7 @@ impl KeyedCSV {
     pub fn get_empty_record_with_key(
         &self,
         key: String,
-        empty_val: Option<&String>,
+        empty_val: Option<&str>,
     ) -> Vec<String> {
         let mut record = vec![key];
 
@@ -88,7 +88,7 @@ impl KeyedCSV {
         }
 
         for _ in 1..until {
-            record.push(empty_val.unwrap_or(&String::new()).to_string());
+            record.push(String::from(empty_val.unwrap_or("")));
         }
         record
     }
