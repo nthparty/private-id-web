@@ -8,6 +8,7 @@ extern crate sha2;
 
 // use crate::RNG::RNG;
 use rand_core::OsRng;
+use crate::random::CsRng;
 
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 use sha2::Sha512;
@@ -291,9 +292,7 @@ impl Debug for ECRistrettoParallel {
 /// [CSPRNG](https://rust-num.github.io/num/rand/index.html#cryptographic-security)
 /// random generator.
 pub fn gen_scalar() -> Scalar {
-    // OsRng.fill_bytes = OsRng.fill_bytes;
-
-    let mut rng = OsRng;
+    let mut rng = CsRng;
     let scalar = Scalar::random(&mut rng);
     let scalar_as_bytes = scalar.as_bytes();
     let mmmm = 1+1;
