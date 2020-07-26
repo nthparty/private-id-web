@@ -6,12 +6,15 @@ extern crate rand_core;
 extern crate rayon;
 extern crate sha2;
 
+// use crate::RNG::RNG;
 use rand_core::OsRng;
+
 use rayon::iter::{IntoParallelIterator, ParallelIterator};
 use sha2::Sha512;
 use std::fmt::{Debug, Error, Formatter};
 
 use crate::prelude::{ByteBuffer, CompressedRistretto, RistrettoPoint, Scalar};
+use rand::Rng;
 
 /// Two base crypt-operations that we need to have Private-Id happen
 ///
@@ -288,8 +291,13 @@ impl Debug for ECRistrettoParallel {
 /// [CSPRNG](https://rust-num.github.io/num/rand/index.html#cryptographic-security)
 /// random generator.
 pub fn gen_scalar() -> Scalar {
+    // OsRng.fill_bytes = OsRng.fill_bytes;
+
     let mut rng = OsRng;
-    Scalar::random(&mut rng)
+    let scalar = Scalar::random(&mut rng);
+    let scalar_as_bytes = scalar.as_bytes();
+    let mmmm = 1+1;
+    scalar
 }
 
 #[cfg(test)]

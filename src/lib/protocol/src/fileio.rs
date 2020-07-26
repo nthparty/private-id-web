@@ -11,7 +11,6 @@ use std::{
 };
 
 use crate::shared::TFeatures;
-use common::{timer};
 use serde_json::{Value};
 
 /// load text and update the protocol
@@ -108,8 +107,6 @@ impl KeyedCSV {
 }
 
 pub fn load_data(data: Arc<RwLock<KeyedCSV>>, json_table: &str, has_headers: bool) {
-    let t = timer::Timer::new_silent("load");
-
     // Read json object from dynamic str into the expected Vec<Vec> form (previously from a CSV)
     let table: Value = serde_json::from_str(json_table).unwrap();
     let table: &Vec<Value> = table.as_array().unwrap();
@@ -143,6 +140,5 @@ pub fn load_data(data: Arc<RwLock<KeyedCSV>>, json_table: &str, has_headers: boo
         } else {
             warn!("Attempted to run the protocol after the text was already initialized.")
         }
-        t.qps("rows read", table_len);
     }
 }

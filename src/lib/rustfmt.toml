@@ -1,3 +1,2 @@
 edition = "2018"
 use_field_init_shorthand = true
-ignore = [ "./protocol-rpc/src/proto/stub_gen_private_id.rs" ]  # Ignore generated files.

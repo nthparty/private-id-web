@@ -7,3 +7,4 @@
 pub mod eccipher;
 pub mod prelude;
 pub mod spoint;
+mod RNG;

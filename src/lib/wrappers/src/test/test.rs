@@ -1,27 +1,38 @@
-extern crate log;
+#[macro_use]
+extern crate lazy_static;
 
 extern crate common;
 extern crate crypto;
-extern crate ctrlc;
 extern crate protocol;
-extern crate retry;
-extern crate rpc;
-extern crate tokio_rustls;
-extern crate tonic;
 
-use log::info;
-
-use common::timer;
 use crypto::prelude::TPayload;
 use protocol::private_id::{partner::PartnerPrivateId, traits::*};
-
 use protocol::private_id::{company::CompanyPrivateId, traits::CompanyPrivateIdProtocol};
 use crypto::spoint::ByteBuffer;
 
+use std::sync::Mutex;
+
+lazy_static! {
+    static ref partner_protocol: Mutex<String> = Mutex::new(String::new());
+}
+
+fn server_init() -> u32 {
+    let mut sguard = GLOBAL_STRING.lock().unwrap();
+    sguard.push('w');
+
+    let mmm = 1+1;
+    let mmmmmm = mmm+mmm;
+    mmm
+}
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    server_init();
+    server_init();
+    server_init();
+
     env_logger::init();
-    let global_timer = timer::Timer::new_silent("global");
+    // let global_timer = timer::Timer::new_silent("global");
 
     let not_matched_val: Option<&str> = Option::Some("Unknown");
     let use_row_numbers = true;
@@ -72,13 +83,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut u_company: Vec<ByteBuffer> = TPayload::new();
     // rpc_client::recv().await.unwrap();  // tag name: "u_company".to_string()
 
-    let _ = timer::Builder::new()
-        .label("server")
-        .extra_label("recv_u_company")
-        .build();
-    let t = timer::Builder::new().label("u_company").build();
+    // let _ = timer::Builder::new()
+    //     .label("server")
+    //     .extra_label("recv_u_company")
+    //     .build();
+    // let t = timer::Builder::new().label("u_company").build();
     let res = company_protocol.get_permuted_keys().unwrap();
-    t.qps(format!("received {}", "u_company").as_str(), res.len());
+    // t.qps(format!("received {}", "u_company").as_str(), res.len());
 
     u_company = /*receive(*/(res)/*)*/;
 
@@ -142,12 +153,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // 16. Create company's ID spine and print
     // rpc_client::reveal();  // tag name: "reveal"
-    global_timer.qps("total time", partner_protocol.get_size());
+    // global_timer.qps("total time", partner_protocol.get_size());
 
     // Print company's output
     company_protocol.write_company_to_id_map();
     company_protocol.print_id_map(u32::MAX as usize, false, use_row_numbers);
 
-    info!("Bye!");
     Ok(())
 }

@@ -13,7 +13,6 @@ use crypto::{
 use common::{
     files,
     permutations::{permute, undo_permute},
-    timer,
 };
 
 use crate::{
@@ -80,9 +79,7 @@ impl CompanyPrivateIdProtocol for CompanyPrivateId {
                 .clone()
                 .write()
                 .map(|mut d| {
-                    let t = timer::Timer::new_silent("Load e_company");
                     d.append(&mut self.ec_cipher.to_points(&data));
-                    t.qps("deserialize", data.len());
                 })
                 .map_err(|_| {
                     ProtocolError::ErrorDeserialization("Cannot load e_company".to_string())
@@ -92,9 +89,7 @@ impl CompanyPrivateIdProtocol for CompanyPrivateId {
                 .clone()
                 .write()
                 .map(|mut d| {
-                    let t = timer::Timer::new_silent("Load v_company");
                     d.append(&mut self.ec_cipher.to_points(&data));
-                    t.qps("deserialize", data.len());
                 })
                 .map_err(|_| {
                     ProtocolError::ErrorDeserialization("Cannot load v_company".to_string())
@@ -108,14 +103,12 @@ impl CompanyPrivateIdProtocol for CompanyPrivateId {
             .clone()
             .write()
             .map(|mut data| {
-                let t = timer::Timer::new_silent("load_u_partner");
                 if data.is_empty() {
                     data.extend(
                         &self
                             .ec_cipher
                             .to_points_encrypt(&u_partner_payload, &self.private_keys.0),
                     );
-                    t.qps("deserialize_exp", u_partner_payload.len());
                 }
             })
             .map_err(|err| {
@@ -133,14 +126,12 @@ impl CompanyPrivateIdProtocol for CompanyPrivateId {
             .clone()
             .write()
             .map(|mut data| {
-                let t = timer::Timer::new_silent("load_s_prime_partner");
                 if data.is_empty() {
                     for k in &s_prime_partner_payload {
                         let record = (*self.plain_data.clone().read().unwrap())
                             .get_empty_record_with_key(k.to_string(), na_val);
                         data.push(record);
                     }
-                    t.qps("deserialize_exp", s_prime_partner_payload.len());
                 }
             })
             .map_err(|err| {
@@ -154,19 +145,16 @@ impl CompanyPrivateIdProtocol for CompanyPrivateId {
     fn get_permuted_keys(&self) -> Result<TPayload, ProtocolError> {
         match self.plain_data.clone().read() {
             Ok(pdata) => {
-                let t = timer::Timer::new_silent("u_company");
                 let plain_keys = pdata.get_plain_keys();
                 let mut u = self
                     .ec_cipher
                     .hash_encrypt_to_bytes(&plain_keys.as_slice(), &self.private_keys.0);
-                t.qps("encryption", u.len());
 
                 self.permutation
                     .clone()
                     .read()
                     .map(|pm| {
                         permute(&pm, &mut u);
-                        t.qps("permutation", pm.len());
                         u
                     })
                     .map_err(|err| {
@@ -188,9 +176,7 @@ impl CompanyPrivateIdProtocol for CompanyPrivateId {
             .clone()
             .read()
             .map(|data| {
-                let t = timer::Timer::new_silent("v_partner");
                 let u = self.ec_cipher.encrypt_to_bytes(&data, &self.private_keys.1);
-                t.qps("exp_serialize", u.len());
                 u
             })
             .map_err(|err| {

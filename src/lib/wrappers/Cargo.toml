@@ -1,0 +1,25 @@
+[package]
+name = "wrappers"
+version = "0.1.0"
+authors = []
+edition = "2018"
+
+[[bin]]
+name = "private-id-test"
+path = "src/test/test.rs"
+
+[lib]
+name = "wrappers"
+path = "src/lib.rs"
+
+[features]
+avx2 = ["crypto/avx2"]
+
+[dependencies]
+common = {path = "../common", version = "0.1.0"}
+crypto = {path = "../crypto", version = "0.1.0"}
+protocol = {path = "../protocol", version = "0.1.0"}
+lazy_static = "0.2"
+
+env_logger = "0.7.1"
+tokio = { version = "0.2", features = ["macros"] }

@@ -16,7 +16,6 @@ use crate::{
 use common::{
     files,
     permutations::{gen_permute_pattern, permute, undo_permute},
-    timer,
 };
 
 use std::sync::{Arc, RwLock};
@@ -70,19 +69,16 @@ impl PartnerPrivateIdProtocol for PartnerPrivateId {
     fn permute_hash_to_bytes(&self) -> Result<TPayload, ProtocolError> {
         match self.plain_data.clone().read() {
             Ok(pdata) => {
-                let t = timer::Timer::new_silent("u_partner");
                 let plain_keys = pdata.get_plain_keys();
                 let mut u = self
                     .ec_cipher
                     .hash_encrypt_to_bytes(&plain_keys.as_slice(), &self.private_keys.0);
-                t.qps("encryption", u.len());
 
                 self.permutation
                     .clone()
                     .read()
                     .map(|pm| {
                         permute(&pm, &mut u);
-                        t.qps("permutation", pm.len());
                         u
                     })
                     .map_err(|err| {
@@ -102,15 +98,12 @@ impl PartnerPrivateIdProtocol for PartnerPrivateId {
 
     //TODO: return result
     fn encrypt_permute(&self, company: TPayload) -> (TPayload, TPayload) {
-        let t = timer::Timer::new_silent("encrypt_permute_company");
         let mut encrypt_company = self
             .ec_cipher
             .to_points_encrypt(&company, &self.private_keys.0);
-        t.qps("encrypt_company", encrypt_company.len());
         let v_company = self
             .ec_cipher
             .encrypt_to_bytes(&encrypt_company, &self.private_keys.1);
-        t.qps("v_company", v_company.len());
         {
             let rand_permutation = gen_permute_pattern(encrypt_company.len());
             // TODO: BUG why is this undo_permute

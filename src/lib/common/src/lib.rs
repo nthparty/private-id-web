@@ -5,9 +5,6 @@
 extern crate log;
 extern crate rayon;
 
-/// Simple timer
-pub mod timer;
-
 /// Simple file io
 pub mod files;
 

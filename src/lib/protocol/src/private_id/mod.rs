@@ -3,7 +3,7 @@
 
 extern crate csv;
 
-use common::{permutations::gen_permute_pattern, timer};
+use common::{permutations::gen_permute_pattern};
 
 use std::sync::{Arc, RwLock};
 
@@ -28,16 +28,10 @@ impl fmt::Display for ProtocolError {
 impl Error for ProtocolError {}
 
 fn fill_permute(permutation: Arc<RwLock<Vec<usize>>>, text_len: usize) {
-    let _ = timer::Builder::new()
-        .label("gen_permutation")
-        .size(text_len)
-        .build();
-    let t = timer::Timer::new_silent("fill permute");
     if let Ok(mut wguard) = permutation.write() {
         if wguard.is_empty() {
             let mut pm = gen_permute_pattern(text_len);
             wguard.append(&mut pm);
-            t.qps("gen permutation", pm.len())
         }
     }
 }
