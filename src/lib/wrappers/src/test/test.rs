@@ -13,27 +13,110 @@ use crypto::spoint::ByteBuffer;
 use std::sync::Mutex;
 
 lazy_static! {
-    static ref partner_protocol: Mutex<String> = Mutex::new(String::new());
+    static ref __partner_protocol: Mutex<PartnerPrivateId> = Mutex::new(PartnerPrivateId::new());
+    static ref __company_protocol: Mutex<CompanyPrivateId> = Mutex::new(CompanyPrivateId::new());
 }
 
-fn server_init() -> u32 {
-    let mut sguard = GLOBAL_STRING.lock().unwrap();
-    sguard.push('w');
+// fn partner_init() {
+//     let mut partner_protocol = __partner_protocol.lock().unwrap();
+//     partner_protocol = PartnerPrivateId::new();
+// }
+//
+// fn company_init() {
+//     let mut company_protocol = __company_protocol.lock().unwrap();
+//     company_protocol = CompanyPrivateId::new();
+// }
 
-    let mmm = 1+1;
-    let mmmmmm = mmm+mmm;
-    mmm
+fn partner_step_2_step_3_step_4(partner_input: &str) -> TPayload {
+    let mut partner_protocol = __partner_protocol.lock().unwrap();
+    partner_protocol.load_data(partner_input, false).unwrap();
+    partner_protocol.gen_permute_pattern().unwrap();
+    partner_protocol.permute_hash_to_bytes().unwrap()
+}
+
+fn company_step_5(company_input: &str) {
+    let mut company_protocol = __company_protocol.lock().unwrap();
+    company_protocol.load_data(company_input, false);
+    // company_protocol.gen_permute_pattern().unwrap();
+}
+
+fn company_step_6() -> TPayload {
+    let mut company_protocol = __company_protocol.lock().unwrap();
+    company_protocol.get_permuted_keys().unwrap()
+}
+
+fn partner_step_7(u_company: TPayload) -> (TPayload, TPayload) {
+    let mut partner_protocol = __partner_protocol.lock().unwrap();
+    partner_protocol.encrypt_permute(u_company)
+}
+
+fn company_step_8(u_partner: TPayload) {
+    let mut company_protocol = __company_protocol.lock().unwrap();
+    company_protocol.set_encrypted_partner_keys(u_partner).unwrap();
+}
+
+fn company_step_9a(e_company: TPayload) {
+    let mut company_protocol = __company_protocol.lock().unwrap();
+    company_protocol.set_encrypted_company("e_company".to_string(), e_company).unwrap();
+}
+
+fn company_step_9b(v_company: TPayload) {
+    let mut company_protocol = __company_protocol.lock().unwrap();
+    company_protocol.set_encrypted_company("v_company".to_string(), v_company).unwrap();
+}
+
+fn company_step_10() -> TPayload {
+    let mut company_protocol = __company_protocol.lock().unwrap();
+    company_protocol.get_encrypted_partner_keys().unwrap()
+}
+
+fn company_step_11() {
+    let mut company_protocol = __company_protocol.lock().unwrap();
+    company_protocol.calculate_set_diff().unwrap();
+}
+
+fn company_step_12() -> TPayload {
+    let mut company_protocol = __company_protocol.lock().unwrap();
+    company_protocol.get_set_diff_output("s_prime_partner".to_string()).unwrap()
+}
+
+fn company_step_13() -> TPayload {
+    let mut company_protocol = __company_protocol.lock().unwrap();
+    company_protocol.get_set_diff_output("s_prime_company".to_string()).unwrap()
+}
+
+fn company_step_14(s_prime_partner: TPayload, not_matched_val: Option<&str>) {
+    let mut company_protocol = __company_protocol.lock().unwrap();
+    company_protocol.write_partner_to_id_map(s_prime_partner, not_matched_val).unwrap();
+}
+
+fn company_step_15() {
+    let mut company_protocol = __company_protocol.lock().unwrap();
+    company_protocol.write_company_to_id_map();
+}
+
+fn company_print_output(use_row_numbers: bool) {
+    let mut company_protocol = __company_protocol.lock().unwrap();
+    company_protocol.print_id_map(u32::MAX as usize, false, use_row_numbers);
+}
+
+fn partner_step_14(s_prime_partner: TPayload) -> TPayload {
+    let mut partner_protocol = __partner_protocol.lock().unwrap();
+    partner_protocol.encrypt(s_prime_partner).unwrap()
+}
+
+fn partner_step_15(v_partner: TPayload, s_prime_company: TPayload, not_matched_val: Option<&str>) {
+    let mut partner_protocol = __partner_protocol.lock().unwrap();
+    partner_protocol.create_id_map(v_partner, s_prime_company, not_matched_val);
+}
+
+fn partner_print_output(use_row_numbers: bool) {
+    let mut partner_protocol = __partner_protocol.lock().unwrap();
+    partner_protocol.print_id_map(usize::MAX, false, use_row_numbers);
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    server_init();
-    server_init();
-    server_init();
-
-    env_logger::init();
-    // let global_timer = timer::Timer::new_silent("global");
-
     let not_matched_val: Option<&str> = Option::Some("Unknown");
     let use_row_numbers = true;
 
@@ -65,51 +148,42 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 
     // 1. Create partner protocol instance
-    let partner_protocol = PartnerPrivateId::new();
+    // partner_init();
 
     // 2. Load partner's data
     // 3. Generate permutation pattern
     // 4. Permute data and hash
-    partner_protocol.load_data(partner_input, false).unwrap();
-    partner_protocol.gen_permute_pattern().unwrap();
-    let u_partner = partner_protocol.permute_hash_to_bytes().unwrap();
+    let u_partner: TPayload = partner_step_2_step_3_step_4(partner_input);
 
     // 5. Initialize company - this loads company's data and generates its permutation pattern
-    let company_protocol = CompanyPrivateId::new();
-    company_protocol.load_data(company_input, false);
-    // company_protocol.gen_permute_pattern().unwrap();
+    // company_init();
+    company_step_5(company_input);
 
     // 6. Get data from company
-    let mut u_company: Vec<ByteBuffer> = TPayload::new();
+    let mut u_company: TPayload = TPayload::new();
     // rpc_client::recv().await.unwrap();  // tag name: "u_company".to_string()
 
-    // let _ = timer::Builder::new()
-    //     .label("server")
-    //     .extra_label("recv_u_company")
-    //     .build();
-    // let t = timer::Builder::new().label("u_company").build();
-    let res = company_protocol.get_permuted_keys().unwrap();
-    // t.qps(format!("received {}", "u_company").as_str(), res.len());
+    let res: TPayload = company_step_6();
 
     u_company = /*receive(*/(res)/*)*/;
 
     // 7. Permute and encrypt data from company with own keys
-    let (e_company, v_company) = partner_protocol.encrypt_permute(u_company);
+    let (e_company, v_company): (TPayload, TPayload) = partner_step_7(u_company);
 
     // 8. Send partner's data to company
     // let ack_u_partner = rpc_client::send(u_partner);  // tag name: "u_partner".to_string()
     let u_partner = /*receive(*/(u_partner)/*)*/;
-    company_protocol.set_encrypted_partner_keys(u_partner).unwrap();
+    company_step_8(u_partner);
 
     // 9a. Send company's data back to company
     // let ack_e_company = rpc_client::send(e_company);  // tag name: "e_company".to_string()
     let e_company = /*receive(*/(e_company)/*)*/;
-    company_protocol.set_encrypted_company("e_company".to_string(), e_company).unwrap();
+    company_step_9a(e_company);
 
     // 9b. Send company's data back to company
     // let ack_v_company = rpc_client::send(v_company);  // tag name: "v_company".to_string()
     let v_company = /*receive(*/(v_company)/*)*/;
-    company_protocol.set_encrypted_company("v_company".to_string(), v_company).unwrap();
+    company_step_9b(v_company);
 
     // let step1_barrier = Step1Barrier {
     //     u_partner_ack: Some(ack_u_partner),
@@ -120,44 +194,39 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 10. Receive partner's back from company
     let mut v_partner = TPayload::new();
     // rpc_client::recv(&mut v_partner);  // "v_partner".to_string()
-    v_partner = /*receive(*/(company_protocol.get_encrypted_partner_keys())/*)*/.unwrap();
+    v_partner = /*receive(*/(company_step_10())/*)*/;
 
     // 11. Calculate symmetric set difference between company and partners data
     // let calculate_set_diff_ack = rpc_client::calculate_set_diff();
-    company_protocol.calculate_set_diff().unwrap();
+    company_step_11();
 
     // 12. Get data that partner has but company doesn't
     let mut s_prime_partner = TPayload::new();
     // rpc_client::recv(&mut s_prime_partner);  // tag name: "s_prime_partner".to_string()
-    s_prime_partner = /*
-        receive(*/(company_protocol.get_set_diff_output("s_prime_partner".to_string()))/*)
-                */.unwrap();
+    s_prime_partner = /*    receive(*/(company_step_12())/*)    */;
 
 
     // 13. Get data that company has but partner doesn't
     let mut s_prime_company = TPayload::new();
     // rpc_client::recv(&mut s_prime_company);  // tag name: "s_prime_company".to_string()
-    s_prime_company = /*
-        receive(*/(company_protocol.get_set_diff_output("s_prime_company".to_string()))/*)
-                */.unwrap();
+    s_prime_company = /*    receive(*/(company_step_13())/*)    */;
 
-    // 14. Encrypt and send back data that partner has company doesn't.  Generates s_double_prime_partner in-place
-    let mut s_prime_partner= partner_protocol.encrypt(s_prime_partner).unwrap();
-    // rpc_client::send(partner_protocol.encrypt(s_prime_partner).unwrap());  // tag name: "s_double_prime_partner".to_string()
-    s_prime_partner = /*receive(*/(s_prime_partner)/*)*/;
-    company_protocol.write_partner_to_id_map(s_prime_partner, not_matched_val).unwrap();
+    // 14. Encrypt and send back data that partner has and company doesn't.  Generates s_double_prime_partner in-place
+    let mut s_prime_partner= partner_step_14(s_prime_partner);
+    // rpc_client::send(partner_step_14(s_prime_partner));  // tag name: "s_double_prime_partner".to_string()
+    s_prime_partner = /*    receive(*/(s_prime_partner)/*)    */;
+    company_step_14(s_prime_partner, not_matched_val);
 
     // 15. Create partner's ID spine and print
-    partner_protocol.create_id_map(v_partner, s_prime_company, not_matched_val);
-    partner_protocol.print_id_map(usize::MAX, false, use_row_numbers);
+    partner_step_15(v_partner, s_prime_company, not_matched_val);
+    partner_print_output(use_row_numbers);
 
     // 16. Create company's ID spine and print
     // rpc_client::reveal();  // tag name: "reveal"
-    // global_timer.qps("total time", partner_protocol.get_size());
 
     // Print company's output
-    company_protocol.write_company_to_id_map();
-    company_protocol.print_id_map(u32::MAX as usize, false, use_row_numbers);
+    company_step_15();
+    company_print_output(use_row_numbers);
 
     Ok(())
 }
