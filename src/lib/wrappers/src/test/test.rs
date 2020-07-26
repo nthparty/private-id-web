@@ -15,85 +15,85 @@ use std::sync::{Mutex, MutexGuard};
 macro_rules! MUT { ($var:expr) => { $var.lock().unwrap() } }
 
 lazy_static! {
-    static ref partner: Mutex<PartnerPrivateId> = Mutex::new(PartnerPrivateId::new());
-    static ref company: Mutex<CompanyPrivateId> = Mutex::new(CompanyPrivateId::new());
+    static ref PARTNER: Mutex<PartnerPrivateId> = Mutex::new(PartnerPrivateId::new());
+    static ref COMPANY: Mutex<CompanyPrivateId> = Mutex::new(CompanyPrivateId::new());
 }
 
 fn partner_step_2(partner_input: &str) {
-    MUT!(partner).load_data(partner_input, false).unwrap();
+    MUT!(PARTNER).load_data(partner_input, false).unwrap();
 }
 
 fn partner_step_3() {
-    MUT!(partner).gen_permute_pattern().unwrap();
+    MUT!(PARTNER).gen_permute_pattern().unwrap();
 }
 
 fn partner_step_4() -> Bytes {
-    MUT!(partner).permute_hash_to_bytes().unwrap()
+    MUT!(PARTNER).permute_hash_to_bytes().unwrap()
 }
 
 fn company_step_5(company_input: &str) {
-    MUT!(company).load_data(company_input, false);
-    // MUT!(company).gen_permute_pattern().unwrap();
+    MUT!(COMPANY).load_data(company_input, false);
+    // MUT!(COMPANY).gen_permute_pattern().unwrap();
 }
 
 fn company_step_6() -> Bytes {
-    MUT!(company).get_permuted_keys().unwrap()
+    MUT!(COMPANY).get_permuted_keys().unwrap()
 }
 
 fn partner_step_7(u_company: Bytes) -> (Bytes, Bytes) {
-    MUT!(partner).encrypt_permute(u_company)
+    MUT!(PARTNER).encrypt_permute(u_company)
 }
 
 fn company_step_8(u_partner: Bytes) {
-    MUT!(company).set_encrypted_partner_keys(u_partner).unwrap();
+    MUT!(COMPANY).set_encrypted_partner_keys(u_partner).unwrap();
 }
 
 fn company_step_9a(e_company: Bytes) {
-    MUT!(company).set_encrypted_company("e_company".to_string(), e_company).unwrap();
+    MUT!(COMPANY).set_encrypted_company("e_company".to_string(), e_company).unwrap();
 }
 
 fn company_step_9b(v_company: Bytes) {
-    MUT!(company).set_encrypted_company("v_company".to_string(), v_company).unwrap();
+    MUT!(COMPANY).set_encrypted_company("v_company".to_string(), v_company).unwrap();
 }
 
 fn company_step_10() -> Bytes {
-    MUT!(company).get_encrypted_partner_keys().unwrap()
+    MUT!(COMPANY).get_encrypted_partner_keys().unwrap()
 }
 
 fn company_step_11() {
-    MUT!(company).calculate_set_diff().unwrap();
+    MUT!(COMPANY).calculate_set_diff().unwrap();
 }
 
 fn company_step_12() -> Bytes {
-    MUT!(company).get_set_diff_output("s_prime_partner".to_string()).unwrap()
+    MUT!(COMPANY).get_set_diff_output("s_prime_partner".to_string()).unwrap()
 }
 
 fn company_step_13() -> Bytes {
-    MUT!(company).get_set_diff_output("s_prime_company".to_string()).unwrap()
+    MUT!(COMPANY).get_set_diff_output("s_prime_company".to_string()).unwrap()
 }
 
 fn company_step_14(s_prime_partner: Bytes, not_matched_val: Option<&str>) {
-    MUT!(company).write_partner_to_id_map(s_prime_partner, not_matched_val).unwrap();
+    MUT!(COMPANY).write_partner_to_id_map(s_prime_partner, not_matched_val).unwrap();
 }
 
 fn company_step_15() {
-    MUT!(company).write_company_to_id_map();
+    MUT!(COMPANY).write_company_to_id_map();
 }
 
 fn company_print_output(use_row_numbers: bool) {
-    MUT!(company).print_id_map(u32::MAX as usize, false, use_row_numbers);
+    MUT!(COMPANY).print_id_map(u32::MAX as usize, false, use_row_numbers);
 }
 
 fn partner_step_14(s_prime_partner: Bytes) -> Bytes {
-    MUT!(partner).encrypt(s_prime_partner).unwrap()
+    MUT!(PARTNER).encrypt(s_prime_partner).unwrap()
 }
 
 fn partner_step_15(v_partner: Bytes, s_prime_company: Bytes, not_matched_val: Option<&str>) {
-    MUT!(partner).create_id_map(v_partner, s_prime_company, not_matched_val);
+    MUT!(PARTNER).create_id_map(v_partner, s_prime_company, not_matched_val);
 }
 
 fn partner_print_output(use_row_numbers: bool) {
-    MUT!(partner).print_id_map(usize::MAX, false, use_row_numbers);
+    MUT!(PARTNER).print_id_map(usize::MAX, false, use_row_numbers);
 }
 
 #[tokio::main]
@@ -169,9 +169,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     company_step_9b(v_company);
 
     // let step1_barrier = Step1Barrier {
-    //     u_partner_ack: Some(ack_u_partner),
-    //     e_company_ack: Some(ack_e_company),
-    //     v_company_ack: Some(ack_v_company),
+    //     u_partner: u_partner,
+    //     e_company: e_company,
+    //     v_company: v_company,
     // };
 
     // 10. Receive partner's back from company
@@ -187,7 +187,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut s_prime_partner = Bytes::new();
     // rpc_client::recv(&mut s_prime_partner);  // tag name: "s_prime_partner".to_string()
     s_prime_partner = /*    receive(*/(company_step_12())/*)    */;
-
 
     // 13. Get data that company has but partner doesn't
     let mut s_prime_company = Bytes::new();
