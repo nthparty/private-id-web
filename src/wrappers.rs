@@ -8,12 +8,6 @@ extern crate private_id_wrappers as wrappers;
 // use rand_core::OsRng;
 // use rand_core::RngCore;
 
-use crypto::prelude::TPayload;
-use protocol::private_id::{partner::PartnerPrivateId, traits::*};
-use protocol::private_id::{company::CompanyPrivateId, traits::CompanyPrivateIdProtocol};
-use crypto::spoint::ByteBuffer;
-use std::any::Any;
-
 use wasm_bindgen::prelude::*;
 use super::js::*;
 use serde_json::json;
@@ -88,8 +82,6 @@ pub fn run() -> String {
         "raymond60@hotmail.com", "sandra41@moody.com", "joanna88@gmail.com",
         "greenstephanie@yahoo.com", "showard@williamson-payne.net"
     ]"#;
-
-    PartnerPrivateId::new();
 
     company_input.to_string()
 }

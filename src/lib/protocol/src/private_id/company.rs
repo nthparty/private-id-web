@@ -72,7 +72,7 @@ impl Default for CompanyPrivateId {
 }
 
 impl CompanyPrivateIdProtocol for CompanyPrivateId {
-    fn set_encrypted_company(&self, name: String, data: TPayload) -> Result<(), ProtocolError> {
+    fn set_encrypted_company(&self, name: String, data: Bytes) -> Result<(), ProtocolError> {
         match name.as_str() {
             "e_company" => self
                 .e_company
@@ -98,7 +98,7 @@ impl CompanyPrivateIdProtocol for CompanyPrivateId {
         }
     }
 
-    fn set_encrypted_partner_keys(&self, u_partner_payload: TPayload) -> Result<(), ProtocolError> {
+    fn set_encrypted_partner_keys(&self, u_partner_payload: Bytes) -> Result<(), ProtocolError> {
         self.e_partner
             .clone()
             .write()
@@ -119,7 +119,7 @@ impl CompanyPrivateIdProtocol for CompanyPrivateId {
 
     fn write_partner_to_id_map(
         &self,
-        s_prime_partner_payload: TPayload,
+        s_prime_partner_payload: Bytes,
         na_val: Option<&str>,
     ) -> Result<(), ProtocolError> {
         self.id_map
@@ -142,7 +142,7 @@ impl CompanyPrivateIdProtocol for CompanyPrivateId {
             })
     }
 
-    fn get_permuted_keys(&self) -> Result<TPayload, ProtocolError> {
+    fn get_permuted_keys(&self) -> Result<Bytes, ProtocolError> {
         match self.plain_data.clone().read() {
             Ok(pdata) => {
                 let plain_keys = pdata.get_plain_keys();
@@ -171,7 +171,7 @@ impl CompanyPrivateIdProtocol for CompanyPrivateId {
         }
     }
 
-    fn get_encrypted_partner_keys(&self) -> Result<TPayload, ProtocolError> {
+    fn get_encrypted_partner_keys(&self) -> Result<Bytes, ProtocolError> {
         self.e_partner
             .clone()
             .read()
@@ -222,7 +222,7 @@ impl CompanyPrivateIdProtocol for CompanyPrivateId {
         }
     }
 
-    fn get_set_diff_output(&self, name: String) -> Result<TPayload, ProtocolError> {
+    fn get_set_diff_output(&self, name: String) -> Result<Bytes, ProtocolError> {
         match name.as_str() {
             "s_prime_partner" => self
                 .s_prime_partner

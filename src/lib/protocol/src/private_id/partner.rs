@@ -66,7 +66,7 @@ impl PartnerPrivateIdProtocol for PartnerPrivateId {
         Ok(())
     }
 
-    fn permute_hash_to_bytes(&self) -> Result<TPayload, ProtocolError> {
+    fn permute_hash_to_bytes(&self) -> Result<Bytes, ProtocolError> {
         match self.plain_data.clone().read() {
             Ok(pdata) => {
                 let plain_keys = pdata.get_plain_keys();
@@ -97,7 +97,7 @@ impl PartnerPrivateIdProtocol for PartnerPrivateId {
     }
 
     //TODO: return result
-    fn encrypt_permute(&self, company: TPayload) -> (TPayload, TPayload) {
+    fn encrypt_permute(&self, company: Bytes) -> (Bytes, Bytes) {
         let mut encrypt_company = self
             .ec_cipher
             .to_points_encrypt(&company, &self.private_keys.0);
@@ -113,14 +113,14 @@ impl PartnerPrivateIdProtocol for PartnerPrivateId {
         (self.ec_cipher.to_bytes(&encrypt_company), v_company)
     }
 
-    fn encrypt(&self, partner: TPayload) -> Result<TPayload, ProtocolError> {
+    fn encrypt(&self, partner: Bytes) -> Result<Bytes, ProtocolError> {
         let ep = self
             .ec_cipher
             .to_points_encrypt(&partner, &self.private_keys.1);
         Ok(self.ec_cipher.to_bytes(&ep))
     }
 
-    fn create_id_map(&self, partner: TPayload, company: TPayload, na_val: Option<&str>) {
+    fn create_id_map(&self, partner: Bytes, company: Bytes, na_val: Option<&str>) {
         match (
             self.permutation.clone().read(),
             self.plain_data.clone().read(),

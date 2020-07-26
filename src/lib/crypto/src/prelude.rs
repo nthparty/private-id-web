@@ -6,6 +6,6 @@ pub use curve25519_dalek::{
 
 pub use crate::spoint::ByteBuffer;
 
-pub type TPayload = Vec<ByteBuffer>;
+pub type Bytes = Vec<ByteBuffer>;
 pub type TPoint = RistrettoPoint;
 pub type TScalar = Scalar;

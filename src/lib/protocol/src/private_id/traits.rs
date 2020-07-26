@@ -4,16 +4,16 @@
 extern crate crypto;
 
 use crate::private_id::ProtocolError;
-use crypto::prelude::TPayload;
+use crypto::prelude::Bytes;
 
 pub trait PartnerPrivateIdProtocol {
     fn gen_permute_pattern(&self) -> Result<(), ProtocolError>;
 
-    fn permute_hash_to_bytes(&self) -> Result<TPayload, ProtocolError>;
-    fn encrypt_permute(&self, company: TPayload) -> (TPayload, TPayload);
-    fn encrypt(&self, partner: TPayload) -> Result<TPayload, ProtocolError>;
+    fn permute_hash_to_bytes(&self) -> Result<Bytes, ProtocolError>;
+    fn encrypt_permute(&self, company: Bytes) -> (Bytes, Bytes);
+    fn encrypt(&self, partner: Bytes) -> Result<Bytes, ProtocolError>;
 
-    fn create_id_map(&self, partner: TPayload, company: TPayload, na_val: Option<&str>);
+    fn create_id_map(&self, partner: Bytes, company: Bytes, na_val: Option<&str>);
     fn print_id_map(&self, limit: usize, input_with_headers: bool, use_row_numbers: bool);
     fn save_id_map(
         &self,
@@ -24,19 +24,19 @@ pub trait PartnerPrivateIdProtocol {
 }
 
 pub trait CompanyPrivateIdProtocol {
-    fn set_encrypted_company(&self, name: String, data: TPayload) -> Result<(), ProtocolError>;
-    fn set_encrypted_partner_keys(&self, u_partner_payload: TPayload) -> Result<(), ProtocolError>;
+    fn set_encrypted_company(&self, name: String, data: Bytes) -> Result<(), ProtocolError>;
+    fn set_encrypted_partner_keys(&self, u_partner_payload: Bytes) -> Result<(), ProtocolError>;
 
-    fn get_permuted_keys(&self) -> Result<TPayload, ProtocolError>;
-    fn get_encrypted_partner_keys(&self) -> Result<TPayload, ProtocolError>;
+    fn get_permuted_keys(&self) -> Result<Bytes, ProtocolError>;
+    fn get_encrypted_partner_keys(&self) -> Result<Bytes, ProtocolError>;
 
     fn calculate_set_diff(&self) -> Result<(), ProtocolError>;
-    fn get_set_diff_output(&self, name: String) -> Result<TPayload, ProtocolError>;
+    fn get_set_diff_output(&self, name: String) -> Result<Bytes, ProtocolError>;
 
     fn write_company_to_id_map(&self);
     fn write_partner_to_id_map(
         &self,
-        s_prime_partner_payload: TPayload,
+        s_prime_partner_payload: Bytes,
         na_val: Option<&str>,
     ) -> Result<(), ProtocolError>;
 

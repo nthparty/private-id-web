@@ -3,7 +3,7 @@ extern crate crypto;
 extern crate protocol;
 
 // use common::timer;
-use crypto::prelude::TPayload;
+use crypto::prelude::Bytes;
 use protocol::private_id::{partner::PartnerPrivateId, traits::*};
 use protocol::private_id::{company::CompanyPrivateId, traits::CompanyPrivateIdProtocol};
 use crypto::spoint::ByteBuffer;
@@ -60,7 +60,7 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // company_protocol.gen_permute_pattern().unwrap();
 
     // 6. Get data from company
-    let mut u_company: Vec<ByteBuffer> = TPayload::new();
+    let mut u_company: Vec<ByteBuffer> = Bytes::new();
     // rpc_client::recv().await.unwrap();  // tag name: "u_company".to_string()
 
     // let _ = timer::Builder::new()
@@ -98,7 +98,7 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // };
 
     // 10. Receive partner's back from company
-    let mut v_partner = TPayload::new();
+    let mut v_partner = Bytes::new();
     // rpc_client::recv(&mut v_partner);  // "v_partner".to_string()
     v_partner = /*receive(*/(company_protocol.get_encrypted_partner_keys())/*)*/.unwrap();
 
@@ -107,7 +107,7 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
     company_protocol.calculate_set_diff().unwrap();
 
     // 12. Get data that partner has but company doesn't
-    let mut s_prime_partner = TPayload::new();
+    let mut s_prime_partner = Bytes::new();
     // rpc_client::recv(&mut s_prime_partner);  // tag name: "s_prime_partner".to_string()
     s_prime_partner = /*
         receive(*/(company_protocol.get_set_diff_output("s_prime_partner".to_string()))/*)
@@ -115,7 +115,7 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 
     // 13. Get data that company has but partner doesn't
-    let mut s_prime_company = TPayload::new();
+    let mut s_prime_company = Bytes::new();
     // rpc_client::recv(&mut s_prime_company);  // tag name: "s_prime_company".to_string()
     s_prime_company = /*
         receive(*/(company_protocol.get_set_diff_output("s_prime_company".to_string()))/*)
