@@ -10,108 +10,125 @@ use protocol::private_id::{partner::PartnerPrivateId, traits::*};
 use protocol::private_id::{company::CompanyPrivateId, traits::CompanyPrivateIdProtocol};
 use crypto::spoint::ByteBuffer;
 
-use std::sync::Mutex;
+use std::sync::{Mutex, MutexGuard};
 
-lazy_static! {
-    static ref __partner_protocol: Mutex<PartnerPrivateId> = Mutex::new(PartnerPrivateId::new());
-    static ref __company_protocol: Mutex<CompanyPrivateId> = Mutex::new(CompanyPrivateId::new());
+struct GlobalProto<T> {
+    protocol: Mutex<T>
 }
 
+impl<T> GlobalProto<T> {
+    fn new(proto: T) -> GlobalProto<T> {
+        GlobalProto{ protocol: Mutex::new(proto) }
+    }
+
+    fn __(&mut self) -> MutexGuard<T> {
+        self.protocol.lock().unwrap()
+    }
+}
+
+lazy_static! {
+    static ref __partner_protocol: GlobalProto<PartnerPrivateId> = GlobalProto::new(PartnerPrivateId::new());
+    static ref __company_protocol: GlobalProto<CompanyPrivateId> = GlobalProto::new(CompanyPrivateId::new());
+}
+
+// macro_rules! rust_mut {
+//     (var) => {var.lock().unwrap()};
+// }
+
 // fn partner_init() {
-//     let mut partner_protocol = __partner_protocol.lock().unwrap();
+//     let mut partner_protocol = __partner_protocol.__();
 //     partner_protocol = PartnerPrivateId::new();
 // }
 //
 // fn company_init() {
-//     let mut company_protocol = __company_protocol.lock().unwrap();
+//     let mut company_protocol = __company_protocol.__();
 //     company_protocol = CompanyPrivateId::new();
 // }
 
 fn partner_step_2_step_3_step_4(partner_input: &str) -> TPayload {
-    let mut partner_protocol = __partner_protocol.lock().unwrap();
+    let mut partner_protocol = __partner_protocol.__();
     partner_protocol.load_data(partner_input, false).unwrap();
     partner_protocol.gen_permute_pattern().unwrap();
     partner_protocol.permute_hash_to_bytes().unwrap()
 }
 
 fn company_step_5(company_input: &str) {
-    let mut company_protocol = __company_protocol.lock().unwrap();
+    let mut company_protocol = __company_protocol.__();
     company_protocol.load_data(company_input, false);
     // company_protocol.gen_permute_pattern().unwrap();
 }
 
 fn company_step_6() -> TPayload {
-    let mut company_protocol = __company_protocol.lock().unwrap();
+    let mut company_protocol = __company_protocol.__();
     company_protocol.get_permuted_keys().unwrap()
 }
 
 fn partner_step_7(u_company: TPayload) -> (TPayload, TPayload) {
-    let mut partner_protocol = __partner_protocol.lock().unwrap();
+    let mut partner_protocol = __partner_protocol.__();
     partner_protocol.encrypt_permute(u_company)
 }
 
 fn company_step_8(u_partner: TPayload) {
-    let mut company_protocol = __company_protocol.lock().unwrap();
-    company_protocol.set_encrypted_partner_keys(u_partner).unwrap();
+    __company_protocol.__().set_encrypted_partner_keys(u_partner).unwrap();
 }
 
 fn company_step_9a(e_company: TPayload) {
-    let mut company_protocol = __company_protocol.lock().unwrap();
+    let mut company_protocol = __company_protocol.__();
     company_protocol.set_encrypted_company("e_company".to_string(), e_company).unwrap();
 }
 
 fn company_step_9b(v_company: TPayload) {
-    let mut company_protocol = __company_protocol.lock().unwrap();
+    let mut company_protocol = __company_protocol.__();
     company_protocol.set_encrypted_company("v_company".to_string(), v_company).unwrap();
 }
 
 fn company_step_10() -> TPayload {
-    let mut company_protocol = __company_protocol.lock().unwrap();
+    let mut company_protocol = __company_protocol.__();
     company_protocol.get_encrypted_partner_keys().unwrap()
 }
 
 fn company_step_11() {
-    let mut company_protocol = __company_protocol.lock().unwrap();
+    let mut company_protocol = __company_protocol.__();
     company_protocol.calculate_set_diff().unwrap();
 }
 
 fn company_step_12() -> TPayload {
-    let mut company_protocol = __company_protocol.lock().unwrap();
+    let mut company_protocol = __company_protocol.__();
     company_protocol.get_set_diff_output("s_prime_partner".to_string()).unwrap()
 }
 
 fn company_step_13() -> TPayload {
-    let mut company_protocol = __company_protocol.lock().unwrap();
+    let mut company_protocol = __company_protocol.__();
     company_protocol.get_set_diff_output("s_prime_company".to_string()).unwrap()
 }
 
 fn company_step_14(s_prime_partner: TPayload, not_matched_val: Option<&str>) {
-    let mut company_protocol = __company_protocol.lock().unwrap();
+    let mut company_protocol = __company_protocol.__();
     company_protocol.write_partner_to_id_map(s_prime_partner, not_matched_val).unwrap();
 }
 
 fn company_step_15() {
-    let mut company_protocol = __company_protocol.lock().unwrap();
+    let mut company_protocol = __company_protocol.__();
     company_protocol.write_company_to_id_map();
 }
 
 fn company_print_output(use_row_numbers: bool) {
-    let mut company_protocol = __company_protocol.lock().unwrap();
+    let mut company_protocol = __company_protocol.__();
     company_protocol.print_id_map(u32::MAX as usize, false, use_row_numbers);
 }
 
 fn partner_step_14(s_prime_partner: TPayload) -> TPayload {
-    let mut partner_protocol = __partner_protocol.lock().unwrap();
+    let mut partner_protocol = __partner_protocol.__();
     partner_protocol.encrypt(s_prime_partner).unwrap()
 }
 
 fn partner_step_15(v_partner: TPayload, s_prime_company: TPayload, not_matched_val: Option<&str>) {
-    let mut partner_protocol = __partner_protocol.lock().unwrap();
+    let mut partner_protocol = __partner_protocol.__();
     partner_protocol.create_id_map(v_partner, s_prime_company, not_matched_val);
 }
 
 fn partner_print_output(use_row_numbers: bool) {
-    let mut partner_protocol = __partner_protocol.lock().unwrap();
+    let mut partner_protocol = __partner_protocol.__();
     partner_protocol.print_id_map(usize::MAX, false, use_row_numbers);
 }
 
