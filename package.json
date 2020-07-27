@@ -2,10 +2,8 @@
   "name": "private-id-web",
   "version": "0.1.0",
   "description": "<div align=\"center\">",
-  "main": "index.js",
-  "directories": {
-    "test": "tests"
-  },
+  "main": "web/privateid.js",
+  "directories": {},
   "dependencies": {},
   "devDependencies": {
     "babelify": "^10.0.0",
