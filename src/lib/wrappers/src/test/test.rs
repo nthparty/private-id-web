@@ -8,9 +8,8 @@ extern crate protocol;
 use crypto::prelude::Bytes;
 use protocol::private_id::{partner::PartnerPrivateId, traits::*};
 use protocol::private_id::{company::CompanyPrivateId, traits::CompanyPrivateIdProtocol};
-use crypto::spoint::ByteBuffer;
 
-use std::sync::{Mutex, MutexGuard};
+use std::sync::{Mutex};
 
 macro_rules! MUT { ($var:expr) => { $var.lock().unwrap() } }
 
@@ -110,42 +109,25 @@ fn partner_build_output(use_row_numbers: bool) -> String  {
     MUT!(PARTNER).stringify_id_map(use_row_numbers)
 }
 
-pub fn test() -> String {
+// trait Serial {
+//     fn
+// }
+//
+// impl Serial for Bytes {
+//
+// }
+
+pub fn test(n: usize) -> String {
     let not_matched_val: Option<&str> = Option::Some("Unknown");
     let use_row_numbers = true;
 
-    let partner_input = r#"[
-        "sanderswilliam@watkins.org", "kim97@hotmail.com", "danielhernandez@hotmail.com",
-        "bryanttanner@hotmail.com", "xmeza@white-ramsey.com", "marshallaustin@hotmail.com",
-        "robinfreeman@yahoo.com", "portermark@yahoo.com", "david97@gmail.com",
-        "showard@williamson-payne.net", "mclaughlintina@reynolds.com", "paul61@gmail.com",
-        "walshkenneth@richard.org", "tyler77@yahoo.com", "willisalison@clark-williams.com",
-        "joanna88@gmail.com", "rhernandez@thompson.com", "allentonya@barr.com",
-        "miguel23@taylor-gilbert.com", "jacobparsons@reilly-ward.com", "bankscynthia@gmail.com",
-        "rebeccajenkins@gmail.com", "nancyfields@irwin-sanders.com", "woodcourtney@hotmail.com",
-        "xcombs@yahoo.com", "erik44@gmail.com"
-    ]"#;
+    let mut data: String = "".to_owned();
+    for i in 1..n {
+        data.push_str(&format!("\"sanderswilliam{}@watkins.org\",", i));
+    }
 
-    let company_input = r#"[
-        "rebeccajenkins@gmail.com", "mooneyamanda@hotmail.com", "bryanttanner@hotmail.com",
-        "xcombs@yahoo.com", "brenda85@hotmail.com", "kim97@hotmail.com", "william23@hotmail.com",
-        "aaron59@jones.net", "walshkenneth@richard.org", "woodcourtney@hotmail.com",
-        "moliver@rush.com", "sanderswilliam@watkins.org", "bankscynthia@gmail.com",
-        "robinfreeman@yahoo.com", "zlawrence@hotmail.com", "rhernandez@thompson.com",
-        "willisalison@clark-williams.com", "jacobparsons@reilly-ward.com", "erik44@gmail.com",
-        "edwardsgeorge@gmail.com", "catherinedavis@hotmail.com", "stephanie23@gmail.com",
-        "tyler77@yahoo.com", "nancyfields@irwin-sanders.com", "portermark@yahoo.com",
-        "raymond60@hotmail.com", "sandra41@moody.com", "joanna88@gmail.com",
-        "greenstephanie@yahoo.com", "showard@williamson-payne.net"
-    ]"#;
-
-    // // let data = [].map(|i|, format!("\"sanderswilliam{}@watkins.org\",", i));
-    // let mut data: String = "".to_owned();
-    // for i in 0..30 {
-    //     data.push_str(&format!("\"sanderswilliam{}@watkins.org\",", i));
-    // }
-    // let partner_input = &format!("[{}\"erik44@gmail.com\"]", data.clone());
-    // let company_input = &format!("[{}\"showard@williamson-payne.net\"]", data.clone());
+    let partner_input = &format!("[{}\"erik44@gmail.com\"]", data.clone());
+    let company_input = &format!("[{}\"showard@williamson-payne.net\"]", data.clone());
 
 
     // 1. Create partner protocol instance
@@ -169,6 +151,7 @@ pub fn test() -> String {
     let res: Bytes = company_step_6();
 
     u_company = /*receive(*/(res)/*)*/;
+    // println!("{}", u_company);
 
     // 7. Permute and encrypt data from company with own keys
     let (e_company, v_company): (Bytes, Bytes) = partner_step_7(u_company);
@@ -239,6 +222,6 @@ pub fn test() -> String {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    test();
+    test(3000);
     Ok(())
 }

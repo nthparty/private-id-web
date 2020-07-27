@@ -1,5 +1,5 @@
 
-// MIT License
+
 
 extern crate common;
 extern crate crypto;
@@ -114,7 +114,7 @@ pub fn load_data(data: Arc<RwLock<KeyedCSV>>, json_table: &str, has_headers: boo
 
     let mut lines: Vec<Vec<String>> = vec![vec!["".to_string()]; table.len()];  // -OR- files::read_csv_as_strings(path)
     for (row_num, row) in table.iter().enumerate() {
-        println!("Row #{}\t{}", row_num, row);
+        // info!("Row #{}\t{}", row_num, row);
         lines[row_num] = vec![row.as_str().unwrap().to_string()];
     }
 

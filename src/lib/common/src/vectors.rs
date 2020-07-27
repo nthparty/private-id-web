@@ -1,5 +1,5 @@
 
-// MIT License
+
 
 // use rayon::prelude::ParallelSliceMut;
 use std::{

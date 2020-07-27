@@ -1,5 +1,5 @@
 
-// MIT License
+
 
 extern crate csv;
 

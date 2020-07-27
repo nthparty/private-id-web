@@ -1,5 +1,5 @@
 
-// MIT License
+
 
 extern crate curve25519_dalek;
 extern crate rand_core;
@@ -292,10 +292,7 @@ impl Debug for ECRistrettoParallel {
 /// random generator.
 pub fn gen_scalar() -> Scalar {
     let mut rng = CsRng::new();
-    let scalar = Scalar::random(&mut rng);
-    let scalar_as_bytes = scalar.as_bytes();
-    let mmmm = 1+1;
-    scalar
+    Scalar::random(&mut rng)
 }
 
 // #[cfg(test)]

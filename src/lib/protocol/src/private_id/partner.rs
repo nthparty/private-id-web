@@ -1,5 +1,5 @@
 
-// MIT License
+
 
 extern crate csv;
 
@@ -194,7 +194,7 @@ impl PartnerPrivateIdProtocol for PartnerPrivateId {
                 output.push_str("\n");
                 for (i, line) in slice.iter().enumerate() {
                     let mut record = line.to_vec();
-                    if use_row_numbers && i >= 0 {
+                    if use_row_numbers {
                         record[0] = i.to_string();
                     }
                     output.push_str(&format!("{}", record.join("\t")));

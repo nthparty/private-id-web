@@ -2,10 +2,10 @@ extern crate rand_core;
 extern crate rand;
 
 use rand_core::{CryptoRng, RngCore};
-use rand::{thread_rng, Rng};
 use self::rand_core::Error;
-use std::io::Write;
 use self::rand::prelude::ThreadRng;
+use self::rand::Rng;
+use std::io::Write;
 
 pub struct CsRng { rng: ThreadRng }
 
@@ -15,17 +15,9 @@ impl CsRng {
     }
 }
 
-// trait rand_rng {
-//     rng
-// }
-
 impl CryptoRng for CsRng {}
 
 impl RngCore for CsRng {
-    // fn next_u8(&mut self) -> u8 {
-    //     8
-    // }
-
     fn next_u32(&mut self) -> u32 {
         self.rng.gen()
     }
@@ -38,7 +30,7 @@ impl RngCore for CsRng {
         let l = dest.len();
         for _ in 0..l {
             let d = [self.rng.gen()];
-            dest.write(&d);
+            dest.write(&d).unwrap();
         }
     }
 

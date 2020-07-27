@@ -5,9 +5,8 @@ extern crate protocol;
 use crypto::prelude::Bytes;
 use protocol::private_id::{partner::PartnerPrivateId, traits::*};
 use protocol::private_id::{company::CompanyPrivateId, traits::CompanyPrivateIdProtocol};
-use crypto::spoint::ByteBuffer;
 
-use std::sync::{Mutex, MutexGuard};
+use std::sync::{Mutex};
 
 macro_rules! MUT { ($var:expr) => { $var.lock().unwrap() } }
 
@@ -67,43 +66,43 @@ fn company_step_11() {
     MUT!(COMPANY).calculate_set_diff().unwrap();
 }
 
-fn company_step_12() -> Bytes {
+pub fn company_step_12() -> Bytes {
     MUT!(COMPANY).get_set_diff_output("s_prime_partner".to_string()).unwrap()
 }
 
-fn company_step_13() -> Bytes {
+pub fn company_step_13() -> Bytes {
     MUT!(COMPANY).get_set_diff_output("s_prime_company".to_string()).unwrap()
 }
 
-fn company_step_14(s_prime_partner: Bytes, not_matched_val: Option<&str>) {
+pub fn company_step_14(s_prime_partner: Bytes, not_matched_val: Option<&str>) {
     MUT!(COMPANY).write_partner_to_id_map(s_prime_partner, not_matched_val).unwrap();
 }
 
-fn company_step_15() {
+pub fn company_step_15() {
     MUT!(COMPANY).write_company_to_id_map();
 }
 
-fn company_print_output(use_row_numbers: bool) {
+pub fn company_print_output(use_row_numbers: bool) {
     MUT!(COMPANY).print_id_map(u32::MAX as usize, false, use_row_numbers);
 }
 
-fn company_build_output(use_row_numbers: bool) -> String {
+pub fn company_build_output(use_row_numbers: bool) -> String {
     MUT!(COMPANY).stringify_id_map(use_row_numbers)
 }
 
-fn partner_step_14(s_prime_partner: Bytes) -> Bytes {
+pub fn partner_step_14(s_prime_partner: Bytes) -> Bytes {
     MUT!(PARTNER).encrypt(s_prime_partner).unwrap()
 }
 
-fn partner_step_15(v_partner: Bytes, s_prime_company: Bytes, not_matched_val: Option<&str>) {
+pub fn partner_step_15(v_partner: Bytes, s_prime_company: Bytes, not_matched_val: Option<&str>) {
     MUT!(PARTNER).create_id_map(v_partner, s_prime_company, not_matched_val);
 }
 
-fn partner_print_output(use_row_numbers: bool) {
+pub fn partner_print_output(use_row_numbers: bool) {
     MUT!(PARTNER).print_id_map(usize::MAX, false, use_row_numbers);
 }
 
-fn partner_build_output(use_row_numbers: bool) -> String  {
+pub fn partner_build_output(use_row_numbers: bool) -> String  {
     MUT!(PARTNER).stringify_id_map(use_row_numbers)
 }
 
