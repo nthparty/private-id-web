@@ -4,8 +4,8 @@ Cargo.lock
 bin/
 wasm-pack.log
 node_modules/
-.idea
-tests
+.idea/
+tests/
 .appveyor.yml
 .cargo-ok
 .travis.yml
