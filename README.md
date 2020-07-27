@@ -2,18 +2,18 @@
 
 Web-Assembly library for [Private-ID generation](
 https://engineering.fb.com/open-source/private-matching/) adapted from
-and inspired by the Rust implementation by Facebook Research [here](https://github.com/facebookresearch/Private-ID).
+and inspired by [this](https://github.com/facebookresearch/Private-ID) Rust implementation by Facebook Research
 
-## Build for web
+### Build for web
 
 ```shell
-npm run-script build # or build-debug
+npm run-script build  # dev: build-debug
 
 # same as
 wasm-pack build --release --no-typescript --target no-modules; npm run-script link-web
 ```
 
-## Run tests locally
+### Run tests locally
 
 ```shell
 npm test
@@ -21,3 +21,8 @@ npm test
 # same as
 cd src/lib; cargo run --bin private-id-test
 ```
+
+### TODO
+
+ - parallelism using web workers
+ -
