@@ -3,7 +3,7 @@
 
 extern crate csv;
 
-use std::sync::{Arc, RwLock};
+use std::sync::{Arc, RwLock, RwLockReadGuard};
 
 use crypto::{
     eccipher::{gen_scalar, ECCipher, ECRistrettoParallel},
@@ -275,6 +275,11 @@ impl CompanyPrivateIdProtocol for CompanyPrivateId {
     }
 
     fn print_id_map(&self, limit: usize, input_with_headers: bool, use_row_numbers: bool) {
+        // let id_map =
+        //     self.id_map
+        //     .clone().read().map(|e| e);
+        // let mut id_map = id_map.iter().collect::<Vec<_>>();
+        // id_map.sort_by(|a, b| a[0].cmp(&b[0]));
         let _ = self
             .id_map
             .clone()
@@ -286,19 +291,70 @@ impl CompanyPrivateIdProtocol for CompanyPrivateId {
             .map_err(|_| {});
     }
 
-    fn save_id_map(
-        &self,
-        path: &str,
-        input_with_headers: bool,
-        use_row_numbers: bool,
-    ) -> Result<(), ProtocolError> {
-        self.id_map
+    fn stringify_id_map(&self, use_row_numbers: bool) -> String {
+        let mut output = "".to_owned();
+        let _ = self
+            .id_map
             .clone()
-            .write()
-            .map(|mut data| {
-                files::write_vec_to_csv(&mut data, path, input_with_headers, use_row_numbers)
-                    .unwrap();
-            })
-            .map_err(|_| ProtocolError::ErrorIO("Unable to write company view to file".to_string()))
+            .read()
+            .map(|view_map| {
+                let mut slice = view_map.iter().collect::<Vec<_>>();
+                if slice.iter().any(|vec| vec.is_empty()) {
+                    panic!("Got empty rows to print out");
+                }
+                slice[0..].sort_by(|a, b| a[0].cmp(&b[0]));
+
+                output.push_str("-----BEGIN FULL VIEW-----");
+                output.push_str("\n");
+                for (i, line) in slice.iter().enumerate() {
+                    let mut record = line.to_vec();
+                    if use_row_numbers && i >= 0 {
+                        record[0] = i.to_string();
+                    }
+                    output.push_str(&format!("{}", record.join("\t")));
+                    output.push_str("\n");
+                }
+                output.push_str("-----END FULL VIEW-----");
+                output.push_str("\n");
+            });
+        output
     }
+
+    // fn stringify_id_map(&self, use_row_numbers: bool) -> String {
+    //     // let id_map = self.id_map.clone().read()[0];
+    //     // let mut start_index = 0;
+    //     // let mut slice = id_map.iter().collect::<Vec<_>>();
+    //     // if slice.len() < start_index || slice.iter().any(|vec| vec.is_empty()) {
+    //     //     panic!("Got empty rows to print out");
+    //     // }
+    //     // slice[start_index..].sort_by(|a, b| a[0].cmp(&b[0]));
+    //     //
+    //     let mut output = "".to_owned();
+    //     output.push_str("-----BEGIN FULL VIEW-----");
+    //     // for (i, line) in slice.iter().enumerate() {
+    //     //     let mut record = line.to_vec();
+    //     //     if use_row_numbers && i >= start_index {
+    //     //         record[0] = i.to_string();
+    //     //     }
+    //     //     output.push_str(&format!("{}", record.join("\t")));
+    //     // }
+    //     output.push_str("-----END FULL VIEW-----");
+    //     output
+    // }
+
+    // fn save_id_map(
+    //     &self,
+    //     path: &str,
+    //     input_with_headers: bool,
+    //     use_row_numbers: bool,
+    // ) -> Result<(), ProtocolError> {
+    //     self.id_map
+    //         .clone()
+    //         .write()
+    //         .map(|mut data| {
+    //             files::write_vec_to_csv(&mut data, path, input_with_headers, use_row_numbers)
+    //                 .unwrap();
+    //         })
+    //         .map_err(|_| ProtocolError::ErrorIO("Unable to write company view to file".to_string()))
+    // }
 }

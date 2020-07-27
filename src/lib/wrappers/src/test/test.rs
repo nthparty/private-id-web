@@ -84,6 +84,10 @@ fn company_print_output(use_row_numbers: bool) {
     MUT!(COMPANY).print_id_map(u32::MAX as usize, false, use_row_numbers);
 }
 
+fn company_build_output(use_row_numbers: bool) -> String {
+    MUT!(COMPANY).stringify_id_map(use_row_numbers)
+}
+
 fn partner_step_14(s_prime_partner: Bytes) -> Bytes {
     MUT!(PARTNER).encrypt(s_prime_partner).unwrap()
 }
@@ -96,8 +100,11 @@ fn partner_print_output(use_row_numbers: bool) {
     MUT!(PARTNER).print_id_map(usize::MAX, false, use_row_numbers);
 }
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn partner_build_output(use_row_numbers: bool) -> String  {
+    MUT!(PARTNER).stringify_id_map(use_row_numbers)
+}
+
+pub fn test() -> String {
     let not_matched_val: Option<&str> = Option::Some("Unknown");
     let use_row_numbers = true;
 
@@ -126,6 +133,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "greenstephanie@yahoo.com", "showard@williamson-payne.net"
     ]"#;
 
+    // // let data = [].map(|i|, format!("\"sanderswilliam{}@watkins.org\",", i));
+    // let mut data: String = "".to_owned();
+    // for i in 0..30 {
+    //     data.push_str(&format!("\"sanderswilliam{}@watkins.org\",", i));
+    // }
+    // let partner_input = &format!("[{}\"erik44@gmail.com\"]", data.clone());
+    // let company_input = &format!("[{}\"showard@williamson-payne.net\"]", data.clone());
 
 
     // 1. Create partner protocol instance
@@ -194,7 +208,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     s_prime_company = /*    receive(*/(company_step_13())/*)    */;
 
     // 14. Encrypt and send back data that partner has and company doesn't.  Generates s_double_prime_partner in-place
-    let mut s_prime_partner= partner_step_14(s_prime_partner);
+    let mut s_prime_partner = partner_step_14(s_prime_partner);
     // rpc_client::send(partner_step_14(s_prime_partner));  // tag name: "s_double_prime_partner".to_string()
     s_prime_partner = /*    receive(*/(s_prime_partner)/*)    */;
     company_step_14(s_prime_partner, not_matched_val);
@@ -210,5 +224,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     company_step_15();
     company_print_output(use_row_numbers);
 
+    let mut output = "".to_owned();
+    output.push_str(&company_build_output(use_row_numbers));
+    output.push_str("\n");
+    output.push_str(&partner_build_output(use_row_numbers));
+    output
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    test();
     Ok(())
 }

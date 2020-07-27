@@ -3,7 +3,7 @@
 
 #[macro_use]
 extern crate log;
-extern crate rayon;
+// extern crate rayon;
 
 /// Simple file io
 pub mod files;

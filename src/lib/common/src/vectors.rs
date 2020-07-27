@@ -1,7 +1,7 @@
 
 // MIT License
 
-use rayon::prelude::ParallelSliceMut;
+// use rayon::prelude::ParallelSliceMut;
 use std::{
     cmp::{Eq, Ord},
     collections::HashSet,
@@ -88,13 +88,13 @@ where
     T: Ord + Send,
 {
     const LARGE_INPUT: usize = 1000000;
-    if v.len() < LARGE_INPUT {
+    // if v.len() < LARGE_INPUT {
         debug!("Using sequential implementation of the vector");
-        v.sort_unstable()
-    } else {
-        debug!("Using paerallel implementation of the vector");
-        v.par_sort_unstable();
-    }
+        v.sort_unstable();  // web assembly can only use this
+    // } else {
+    //     debug!("Using paerallel implementation of the vector");
+    //     v.par_sort_unstable();
+    // }
     v.dedup();
 }
 

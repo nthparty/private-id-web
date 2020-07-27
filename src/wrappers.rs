@@ -26,34 +26,10 @@ pub fn test() -> String {
     //     ])
     // ))
 
-    match wrappers::wrappers::main().unwrap() {
-        () => "unit",
-        _ => "error"
-    }.to_string()
-
-    // wrappers::wrappers::client_stage().to_string();
-
-
-
-    // protocol::private_id::partner::PartnerPrivateId::new();
-
-    // protocol::fileio::load_data()
-
-    // "".to_string()
-}
-
-#[wasm_bindgen]
-pub fn permute(p: Vec<u32>, a: Vec<u32>) -> Vec<u32> {
-    let mut items: Vec<usize> = u32_to_usize(a);
-    let permutation = u32_to_usize(p);
-
-    common::permutations::permute(&permutation, &mut items);
-
-    usize_to_u32(items)
-}
-
-#[wasm_bindgen]
-pub fn run() -> String {
+    // match wrappers::wrappers::main().unwrap() {
+    //     () => "unit",
+    //     _ => "error"
+    // }.to_string()
 
     let not_matched_val: Option<&str> = Option::Some("Unknown");
     let use_row_numbers = true;
@@ -83,7 +59,39 @@ pub fn run() -> String {
         "greenstephanie@yahoo.com", "showard@williamson-payne.net"
     ]"#;
 
-    company_input.to_string()
+    wrappers::wrappers::test(partner_input, company_input, not_matched_val, use_row_numbers)
+
+
+    // wrappers::wrappers::client_stage().to_string();
+
+
+
+    // protocol::private_id::partner::PartnerPrivateId::new();
+
+    // protocol::fileio::load_data()
+
+    // "".to_string()
+}
+
+#[wasm_bindgen]
+pub fn permute(p: Vec<u32>, a: Vec<u32>) -> Vec<u32> {
+    let mut items: Vec<usize> = u32_to_usize(a);
+    let permutation = u32_to_usize(p);
+
+    common::permutations::permute(&permutation, &mut items);
+
+    usize_to_u32(items)
+}
+
+#[wasm_bindgen]
+pub fn run(partner_input: String, company_input: String, not_matched_val: String, use_row_numbers: bool)
+    -> String {
+    wrappers::wrappers::test(
+        partner_input.as_str(),
+        company_input.as_str(),
+        Option::Some(not_matched_val.as_str()),
+        use_row_numbers
+    )
 }
 
 // #[wasm_bindgen]

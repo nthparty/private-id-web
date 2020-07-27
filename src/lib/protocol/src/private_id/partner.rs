@@ -178,19 +178,48 @@ impl PartnerPrivateIdProtocol for PartnerPrivateId {
             .map_err(|_| {});
     }
 
-    fn save_id_map(
-        &self,
-        path: &str,
-        input_with_headers: bool,
-        use_row_numbers: bool,
-    ) -> Result<(), ProtocolError> {
-        self.id_map
+    fn stringify_id_map(&self, use_row_numbers: bool) -> String {
+        let mut output = "".to_owned();
+        let _ = self
+            .id_map
             .clone()
-            .write()
-            .map(|mut data| {
-                files::write_vec_to_csv(&mut data, path, input_with_headers, use_row_numbers)
-                    .unwrap();
-            })
-            .map_err(|_| ProtocolError::ErrorIO("Unable to write partner view to file".to_string()))
+            .read()
+            .map(|view_map| {
+                let mut slice = view_map.iter().collect::<Vec<_>>();
+                if slice.iter().any(|vec| vec.is_empty()) {
+                    panic!("Got empty rows to print out");
+                }
+                slice[0..].sort_by(|a, b| a[0].cmp(&b[0]));
+
+                output.push_str("-----BEGIN FULL VIEW-----");
+                output.push_str("\n");
+                for (i, line) in slice.iter().enumerate() {
+                    let mut record = line.to_vec();
+                    if use_row_numbers && i >= 0 {
+                        record[0] = i.to_string();
+                    }
+                    output.push_str(&format!("{}", record.join("\t")));
+                    output.push_str("\n");
+                }
+                output.push_str("-----END FULL VIEW-----");
+                output.push_str("\n");
+            });
+        output
     }
+
+    // fn save_id_map(
+    //     &self,
+    //     path: &str,
+    //     input_with_headers: bool,
+    //     use_row_numbers: bool,
+    // ) -> Result<(), ProtocolError> {
+    //     self.id_map
+    //         .clone()
+    //         .write()
+    //         .map(|mut data| {
+    //             files::write_vec_to_csv(&mut data, path, input_with_headers, use_row_numbers)
+    //                 .unwrap();
+    //         })
+    //         .map_err(|_| ProtocolError::ErrorIO("Unable to write partner view to file".to_string()))
+    // }
 }

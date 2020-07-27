@@ -3,7 +3,7 @@
 
 extern crate csv;
 
-use rayon::prelude::ParallelSliceMut;
+// use rayon::prelude::ParallelSliceMut;
 use std::{error::Error, path::Path, str::FromStr};
 
 pub struct KeyedNums<T> {
@@ -106,41 +106,6 @@ where
         res.push(KeyedNums::new(&v))
     }
     res
-}
-
-/// Function to save a vector of vector of strings to the CSV file
-/// WARN: the function takes ownership of the hashmap and and drains it to the file
-// TODO: add parallel sorting of the outputs by key or by value
-pub fn write_vec_to_csv<T>(
-    view_map: &mut Vec<Vec<String>>,
-    path: T,
-    output_with_headers: bool,
-    use_row_numbers: bool,
-) -> Result<(), Box<dyn Error>>
-where
-    T: AsRef<Path>,
-{
-    if view_map.is_empty() || view_map.iter().any(|vec| vec.is_empty()) {
-        panic!("Got empty rows to write to CSV");
-    }
-    let mut wr = csv::WriterBuilder::new()
-        .buffer_capacity(1024)
-        .from_path(path)
-        .unwrap();
-    let mut start_index = 0;
-    if output_with_headers {
-        start_index = 1
-    }
-    view_map[start_index..].par_sort_unstable_by(|a, b| a[0].cmp(&b[0]));
-
-    for (i, line) in view_map.drain(..).enumerate() {
-        let mut record = line.to_vec();
-        if use_row_numbers && i >= start_index {
-            record[0] = i.to_string();
-        }
-        wr.write_record(record.as_slice())?;
-    }
-    Ok(())
 }
 
 pub fn write_u64cols_to_file<T>(shares: &mut Vec<Vec<u64>>, path: T) -> Result<(), Box<dyn Error>>

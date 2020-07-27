@@ -3,19 +3,18 @@
 
 extern crate curve25519_dalek;
 extern crate rand_core;
-extern crate rayon;
+// extern crate rayon;
 extern crate sha2;
 
-// use crate::RNG::RNG;
-use rand_core::OsRng;
-use crate::random::CsRng;
+// use rand_core::OsRng;
+use crate::random::CsRng;  // web-capable
 
-use rayon::iter::{IntoParallelIterator, ParallelIterator};
+// use rayon::iter::{IntoParallelIterator, ParallelIterator};
 use sha2::Sha512;
 use std::fmt::{Debug, Error, Formatter};
 
 use crate::prelude::{ByteBuffer, CompressedRistretto, RistrettoPoint, Scalar};
-use rand::Rng;
+// use rand::Rng;
 
 /// Two base crypt-operations that we need to have Private-Id happen
 ///
@@ -397,3 +396,82 @@ mod tests {
         }
     }
 }
+//     fn gen_points(n: usize) -> Vec<RistrettoPoint> {
+//         let mut rng = CsRng;
+//         (0..n)
+//             .map(|_| RistrettoPoint::random(&mut rng))
+//             .collect::<Vec<RistrettoPoint>>()
+//     }
+//
+//     #[test]
+//     fn compress_decompress_works() {
+//         let n = 100;
+//         let mut rng = CsRng;
+//         let key = Scalar::random(&mut rng);
+//         for _ in 0..3 {
+//             let items = gen_points(n);
+//             let seq = ECRistrettoSequential::new();
+//             let parr = ECRistrettoParallel::new();
+//
+//             // Try API that encrypts and converts to bytes
+//             {
+//                 let srlz_items_seq = seq.encrypt_to_bytes(&items, &key);
+//                 let srlz_items_parr = parr.encrypt_to_bytes(&items, &key);
+//
+//                 let dcmp_seq = seq.to_points(&srlz_items_seq);
+//                 let dcmp_parr = parr.to_points(&srlz_items_parr);
+//
+//                 assert_eq!(vec_compare(&srlz_items_seq, &srlz_items_parr), true);
+//                 assert_eq!(vec_compare(&dcmp_seq, &dcmp_parr), true);
+//             }
+//
+//             // Try APIs that encrypts and converts to bytes separately
+//             {
+//                 let srlz_items_seq = seq.to_bytes(&seq.encrypt(&items, &key));
+//                 let srlz_items_parr = parr.to_bytes(&parr.encrypt(&items, &key));
+//
+//                 let dcmp_seq = seq.to_points(&srlz_items_seq);
+//                 let dcmp_parr = parr.to_points(&srlz_items_parr);
+//
+//                 assert_eq!(vec_compare(&srlz_items_seq, &srlz_items_parr), true);
+//                 assert_eq!(vec_compare(&dcmp_seq, &dcmp_parr), true);
+//             }
+//         }
+//     }
+//
+//     #[test]
+//     fn exp_op_is_identical_for_serial_and_parr() {
+//         let mut rng = CsRng;
+//         let n = 100;
+//         // let chunk_size = 3;
+//         // its important to keep the chunk size smaller
+//         // we need to test that the order is preserved
+//         // assert!(chunk_size < n);
+//         for _ in 0..3 {
+//             let key = Scalar::random(&mut rng);
+//             let points = gen_points(n);
+//             let seq = ECRistrettoSequential::new();
+//             let parr = ECRistrettoParallel::new();
+//             let res_parr = parr.encrypt(&points, &key);
+//             let res_seq = seq.encrypt(&points, &key);
+//             assert_eq!(vec_compare(&res_parr, &res_seq), true);
+//         }
+//     }
+//
+//     #[test]
+//     fn enc_op_is_identical_for_serial_and_parr() {
+//         let mut rng = CsRng;
+//         let n = 100;
+//         // let chunk_size = 3;
+//         for _ in 0..10 {
+//             let key = Scalar::random(&mut rng);
+//             let text = (0..n).map(|_| random_string(16)).collect::<Vec<String>>();
+//
+//             let seq = ECRistrettoSequential::default();
+//             let parr = ECRistrettoParallel::new();
+//             let res_parr = parr.hash_encrypt(&text, &key);
+//             let res_seq = seq.hash_encrypt(&text, &key);
+//             assert_eq!(vec_compare(&res_parr, &res_seq), true);
+//         }
+//     }
+// }
