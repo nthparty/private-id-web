@@ -87,7 +87,7 @@ pub fn dedup_unstable<T>(v: &mut Vec<T>)
 where
     T: Ord + Send,
 {
-    const LARGE_INPUT: usize = 1000000;
+    // const LARGE_INPUT: usize = 1000000;
     // if v.len() < LARGE_INPUT {
         debug!("Using sequential implementation of the vector");
         v.sort_unstable();  // web assembly can only use this

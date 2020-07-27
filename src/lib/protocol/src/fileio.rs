@@ -106,7 +106,7 @@ impl KeyedCSV {
     }
 }
 
-pub fn load_data(data: Arc<RwLock<KeyedCSV>>, json_table: &str, has_headers: bool) {
+pub fn load_data(data: Arc<RwLock<KeyedCSV>>, json_table: &str, has_headers: bool) -> bool {
     // Read json object from dynamic str into the expected Vec<Vec> form (previously from a CSV)
     let table: Value = serde_json::from_str(json_table).unwrap();
     let table: &Vec<Value> = table.as_array().unwrap();
@@ -118,6 +118,7 @@ pub fn load_data(data: Arc<RwLock<KeyedCSV>>, json_table: &str, has_headers: boo
         lines[row_num] = vec![row.as_str().unwrap().to_string()];
     }
 
+    let mut ret = false;
     if let Ok(mut wguard) = data.write() {
         if wguard.records.is_empty() {
             let mut line_it = lines.drain(..);
@@ -137,8 +138,8 @@ pub fn load_data(data: Arc<RwLock<KeyedCSV>>, json_table: &str, has_headers: boo
                 table_len,
                 table_len - keys_len
             );
-        } else {
-            warn!("Attempted to run the protocol after the text was already initialized.")
+            ret = true
         }
     }
+    ret
 }
