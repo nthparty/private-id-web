@@ -15,12 +15,15 @@ use std::sync::{Mutex, MutexGuard};
 macro_rules! MUT { ($var:expr) => { $var.lock().unwrap() } }
 
 lazy_static! {
-    static ref PARTNER: Mutex<PartnerPrivateId> = Mutex::new(PartnerPrivateId::new());
-    static ref COMPANY: Mutex<CompanyPrivateId> = Mutex::new(CompanyPrivateId::new());
+    static ref PARTNER: Mutex<PartnerPrivateId> = Mutex::new(Default::default());
+    static ref COMPANY: Mutex<CompanyPrivateId> = Mutex::new(Default::default());
 }
 
 fn partner_step_2(partner_input: &str) {
-    MUT!(PARTNER).load_data(partner_input, false).unwrap();
+    if MUT!(PARTNER).load_data(partner_input, false).unwrap() == false {
+        panic!("Attempted to run the protocol after the text was already initialized.");
+        /* default the PartnerPrivateId instance here if we want to allow reruns */
+    }
 }
 
 fn partner_step_3() {
@@ -32,7 +35,10 @@ fn partner_step_4() -> Bytes {
 }
 
 fn company_step_5(company_input: &str) {
-    MUT!(COMPANY).load_data(company_input, false);
+    if MUT!(COMPANY).load_data(company_input, false) == false {
+        panic!("Attempted to run the protocol after the text was already initialized.");
+        /* default the CompanyPrivateId instance here if we want to allow reruns */
+    }
     // MUT!(COMPANY).gen_permute_pattern().unwrap();
 }
 

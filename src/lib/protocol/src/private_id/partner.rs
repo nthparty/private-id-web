@@ -41,9 +41,8 @@ impl PartnerPrivateId {
         }
     }
 
-    pub fn load_data(&self, path: &str, input_with_headers: bool) -> Result<(), ProtocolError> {
-        load_data(self.plain_data.clone(), path, input_with_headers);
-        Ok(())
+    pub fn load_data(&self, path: &str, input_with_headers: bool) -> Result<bool, ProtocolError> {
+        Ok(load_data(self.plain_data.clone(), path, input_with_headers))
     }
 
     pub fn get_size(&self) -> usize {
