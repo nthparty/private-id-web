@@ -153,7 +153,7 @@ pub fn permute(p: Vec<u32>, a: Vec<u32>) -> Vec<u32> {
 pub fn run(partner_input: String, company_input: String, not_matched_val: String, use_row_numbers: bool)
     -> String {
     let not_matched_val = Option::Some(&not_matched_val as &str);
-    wrappers::test(
+    protocol(
         &partner_input,
         &company_input,
         not_matched_val,
