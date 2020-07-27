@@ -15,22 +15,22 @@ lazy_static! {
     static ref COMPANY: Mutex<CompanyPrivateId> = Mutex::new(Default::default());
 }
 
-fn partner_step_2(partner_input: &str) {
+pub fn partner_step_2(partner_input: &str) {
     if MUT!(PARTNER).load_data(partner_input, false).unwrap() == false {
         panic!("Attempted to run the protocol after the text was already initialized.");
         /* default the PartnerPrivateId instance here if we want to allow reruns */
     }
 }
 
-fn partner_step_3() {
+pub fn partner_step_3() {
     MUT!(PARTNER).gen_permute_pattern().unwrap();
 }
 
-fn partner_step_4() -> Bytes {
+pub fn partner_step_4() -> Bytes {
     MUT!(PARTNER).permute_hash_to_bytes().unwrap()
 }
 
-fn company_step_5(company_input: &str) {
+pub fn company_step_5(company_input: &str) {
     if MUT!(COMPANY).load_data(company_input, false) == false {
         panic!("Attempted to run the protocol after the text was already initialized.");
         /* default the CompanyPrivateId instance here if we want to allow reruns */
@@ -38,31 +38,31 @@ fn company_step_5(company_input: &str) {
     // MUT!(COMPANY).gen_permute_pattern().unwrap();
 }
 
-fn company_step_6() -> Bytes {
+pub fn company_step_6() -> Bytes {
     MUT!(COMPANY).get_permuted_keys().unwrap()
 }
 
-fn partner_step_7(u_company: Bytes) -> (Bytes, Bytes) {
+pub fn partner_step_7(u_company: Bytes) -> (Bytes, Bytes) {
     MUT!(PARTNER).encrypt_permute(u_company)
 }
 
-fn company_step_8(u_partner: Bytes) {
+pub fn company_step_8(u_partner: Bytes) {
     MUT!(COMPANY).set_encrypted_partner_keys(u_partner).unwrap();
 }
 
-fn company_step_9a(e_company: Bytes) {
+pub fn company_step_9a(e_company: Bytes) {
     MUT!(COMPANY).set_encrypted_company("e_company".to_string(), e_company).unwrap();
 }
 
-fn company_step_9b(v_company: Bytes) {
+pub fn company_step_9b(v_company: Bytes) {
     MUT!(COMPANY).set_encrypted_company("v_company".to_string(), v_company).unwrap();
 }
 
-fn company_step_10() -> Bytes {
+pub fn company_step_10() -> Bytes {
     MUT!(COMPANY).get_encrypted_partner_keys().unwrap()
 }
 
-fn company_step_11() {
+pub fn company_step_11() {
     MUT!(COMPANY).calculate_set_diff().unwrap();
 }
 

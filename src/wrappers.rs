@@ -1,7 +1,7 @@
 extern crate private_id_common as common;
 extern crate private_id_crypto as crypto;
 extern crate private_id_protocol as protocol;
-extern crate private_id_wrappers as wrappers;
+extern crate private_id_wrappers as wasm_wrappers;
 
 // extern crate rand_core;
 //
@@ -11,26 +11,124 @@ extern crate private_id_wrappers as wrappers;
 use wasm_bindgen::prelude::*;
 use super::js::*;
 use serde_json::json;
+use serde_json::from_str;
+use self::crypto::prelude::Bytes;
+use wasm_wrappers::wrappers;
+
+#[wasm_bindgen]
+extern "C" {
+    // Use `js_namespace` here to bind console_log to `console.log(..)`
+    #[wasm_bindgen(js_namespace = console, js_name = log)]
+    fn console_log(s: &str);
+}
+
+trait JSON {
+    fn to_json(&self) -> String;
+    fn from_json(s: String) -> Self;
+}
+
+impl JSON for Bytes {
+    fn to_json(&self) -> String {
+        format!("{}", json!(self))
+    }
+
+    fn from_json(s: String) -> Self {
+        from_str(&s).unwrap()
+    }
+}
+
+pub fn protocol(
+    partner_input: &str,
+    company_input: &str,
+    not_matched_val: Option<&str>,
+    use_row_numbers: bool
+) -> String {
+    // 1. Create partner protocol instance
+    // partner_init();
+
+    // 2. Load partner's data
+    // 3. Generate permutation pattern
+    // 4. Permute data and hash
+    wrappers::partner_step_2(partner_input);
+    wrappers::partner_step_3();
+    let u_partner: Bytes = wrappers::partner_step_4();
+
+    // 5. Initialize company - this loads company's data and generates its permutation pattern
+    // company_init();
+    wrappers::company_step_5(company_input);
+
+    // 6. Get data from company
+    let mut u_company: Bytes = Bytes::new();
+    // rpc_client::recv().await.unwrap();  // tag name: "u_company".to_string()
+
+    let res: Bytes = wrappers::company_step_6();
+
+    let res_json = res.to_json();
+    console_log(&res_json);
+    let res2 = Bytes::from_json(res_json);
+
+    u_company = /*receive(*/(res2)/*)*/;
+
+    // 7. Permute and encrypt data from company with own keys
+    let (e_company, v_company): (Bytes, Bytes) = wrappers::partner_step_7(u_company);
+
+    // 8. Send partner's data to company
+    // let ack_u_partner = rpc_client::send(u_partner);  // tag name: "u_partner".to_string()
+    let u_partner = /*receive(*/(u_partner)/*)*/;
+    wrappers::company_step_8(u_partner);
+
+    // 9a. Send company's data back to company
+    // let ack_e_company = rpc_client::send(e_company);  // tag name: "e_company".to_string()
+    let e_company = /*receive(*/(e_company)/*)*/;
+    wrappers::company_step_9a(e_company);
+
+    // 9b. Send company's data back to company
+    // let ack_v_company = rpc_client::send(v_company);  // tag name: "v_company".to_string()
+    let v_company = /*receive(*/(v_company)/*)*/;
+    wrappers::company_step_9b(v_company);
+
+    // 10. Receive partner's back from company
+    let mut v_partner = Bytes::new();
+    // rpc_client::recv(&mut v_partner);  // "v_partner".to_string()
+    v_partner = /*receive(*/(wrappers::company_step_10())/*)*/;
+
+    // 11. Calculate symmetric set difference between company and partners data
+    // let calculate_set_diff_ack = rpc_client::calculate_set_diff();
+    wrappers::company_step_11();
+
+    // 12. Get data that partner has but company doesn't
+    let mut s_prime_partner = Bytes::new();
+    // rpc_client::recv(&mut s_prime_partner);  // tag name: "s_prime_partner".to_string()
+    s_prime_partner = /*    receive(*/(wrappers::company_step_12())/*)    */;
+
+    // 13. Get data that company has but partner doesn't
+    let mut s_prime_company = Bytes::new();
+    // rpc_client::recv(&mut s_prime_company);  // tag name: "s_prime_company".to_string()
+    s_prime_company = /*    receive(*/(wrappers::company_step_13())/*)    */;
+
+    // 14. Encrypt and send back data that partner has and company doesn't.  Generates s_double_prime_partner in-place
+    let mut s_prime_partner = wrappers::partner_step_14(s_prime_partner);
+    // rpc_client::send(wrappers::partner_step_14(s_prime_partner));  // tag name: "s_double_prime_partner".to_string()
+    s_prime_partner = /*    receive(*/(s_prime_partner)/*)    */;
+    wrappers::company_step_14(s_prime_partner, not_matched_val);
+
+    // 15. Create partner's ID spine and print
+    wrappers::partner_step_15(v_partner, s_prime_company, not_matched_val);
+
+    wrappers::company_step_15();
+
+    // 16. Create company's ID spine and print
+    // rpc_client::reveal();  // tag name: "reveal"
+
+    let mut output = "".to_owned();
+    output.push_str(&wrappers::company_build_output(use_row_numbers));
+    output.push_str("\n");
+    output.push_str(&wrappers::partner_build_output(use_row_numbers));
+    output
+}
 
 #[wasm_bindgen]
 pub fn test() -> String {
-    // let &mut input_with_headers;
-    // let var_name = protocol::private_id::partner::PartnerPrivateId::load_data("", input_with_headers);
-    // protocol::private_id::partner::PartnerPrivateId::new();
-    let hello = "Hello".to_string();
-
-    // format!("{}", json!(
-    //     vec!([
-    //         vec!([hello.clone(), hello.clone(), hello.clone()]),
-    //         vec!([hello.clone(), hello.clone(), hello.clone()])
-    //     ])
-    // ))
-
-    // match wrappers::wrappers::main().unwrap() {
-    //     () => "unit",
-    //     _ => "error"
-    // }.to_string()
-
     let not_matched_val: Option<&str> = Option::Some("Unknown");
     let use_row_numbers = true;
 
@@ -59,18 +157,7 @@ pub fn test() -> String {
         "greenstephanie@yahoo.com", "showard@williamson-payne.net"
     ]"#;
 
-    wrappers::wrappers::test(partner_input, company_input, not_matched_val, use_row_numbers)
-
-
-    // wrappers::wrappers::client_stage().to_string();
-
-
-
-    // protocol::private_id::partner::PartnerPrivateId::new();
-
-    // protocol::fileio::load_data()
-
-    // "".to_string()
+    protocol(partner_input, company_input, not_matched_val, use_row_numbers)
 }
 
 #[wasm_bindgen]
@@ -86,25 +173,10 @@ pub fn permute(p: Vec<u32>, a: Vec<u32>) -> Vec<u32> {
 #[wasm_bindgen]
 pub fn run(partner_input: String, company_input: String, not_matched_val: String, use_row_numbers: bool)
     -> String {
-    wrappers::wrappers::test(
+    wrappers::test(
         partner_input.as_str(),
         company_input.as_str(),
         Option::Some(not_matched_val.as_str()),
         use_row_numbers
     )
 }
-
-// #[wasm_bindgen]
-// pub fn random() -> u32 {
-//     let mut scalar_bytes = [0u8; 64];
-//     OsRng.fill_bytes(&mut scalar_bytes);
-//     1
-//
-//
-//     // let mut os_rng = OsRng::new().unwrap();
-//     // let mut key = [0u8; 16];
-//     // os_rng.fill_bytes(&mut key);
-//     // let random_u64 = os_rng.next_u32();
-//     //
-//     // random_u64
-// }
