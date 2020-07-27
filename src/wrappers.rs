@@ -1,40 +1,19 @@
 extern crate private_id_common as common;
 extern crate private_id_crypto as crypto;
 extern crate private_id_protocol as protocol;
-extern crate private_id_wrappers as wasm_wrappers;
-
-// extern crate rand_core;
-//
-// use rand_core::OsRng;
-// use rand_core::RngCore;
+extern crate private_id_wrappers as rust_wrappers;
 
 use wasm_bindgen::prelude::*;
 use super::js::*;
-use serde_json::json;
-use serde_json::from_str;
-use self::crypto::prelude::Bytes;
-use wasm_wrappers::wrappers;
+
+use rust_wrappers::wrappers;
+use crypto::prelude::Bytes;
 
 #[wasm_bindgen]
 extern "C" {
     // Use `js_namespace` here to bind console_log to `console.log(..)`
     #[wasm_bindgen(js_namespace = console, js_name = log)]
     fn console_log(s: &str);
-}
-
-trait JSON {
-    fn to_json(&self) -> String;
-    fn from_json(s: String) -> Self;
-}
-
-impl JSON for Bytes {
-    fn to_json(&self) -> String {
-        format!("{}", json!(self))
-    }
-
-    fn from_json(s: String) -> Self {
-        from_str(&s).unwrap()
-    }
 }
 
 pub fn protocol(
@@ -173,10 +152,11 @@ pub fn permute(p: Vec<u32>, a: Vec<u32>) -> Vec<u32> {
 #[wasm_bindgen]
 pub fn run(partner_input: String, company_input: String, not_matched_val: String, use_row_numbers: bool)
     -> String {
+    let not_matched_val = Option::Some(&not_matched_val as &str);
     wrappers::test(
-        partner_input.as_str(),
-        company_input.as_str(),
-        Option::Some(not_matched_val.as_str()),
+        &partner_input,
+        &company_input,
+        not_matched_val,
         use_row_numbers
     )
 }

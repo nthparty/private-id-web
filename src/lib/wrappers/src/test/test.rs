@@ -109,25 +109,17 @@ fn partner_build_output(use_row_numbers: bool) -> String  {
     MUT!(PARTNER).stringify_id_map(use_row_numbers)
 }
 
-// trait Serial {
-//     fn
-// }
-//
-// impl Serial for Bytes {
-//
-// }
-
 pub fn test(n: usize) -> String {
     let not_matched_val: Option<&str> = Option::Some("Unknown");
     let use_row_numbers = true;
 
     let mut data: String = "".to_owned();
     for i in 1..n {
-        data.push_str(&format!("\"sanderswilliam{}@watkins.org\",", i));
+        data.push_str(&format!("\"shared{}email@example.org\",", i));
     }
 
-    let partner_input = &format!("[{}\"erik44@gmail.com\"]", data.clone());
-    let company_input = &format!("[{}\"showard@williamson-payne.net\"]", data.clone());
+    let partner_input = &format!("[{}\"partnersonly@gmail.com\"]", data.clone());
+    let company_input = &format!("[{}\"sealevel@company.net\"]", data.clone());
 
 
     // 1. Create partner protocol instance
