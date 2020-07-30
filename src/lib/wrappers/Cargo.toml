@@ -6,7 +6,7 @@ edition = "2018"
 
 [[bin]]
 name = "private-id-test"
-path = "src/test/test.rs"
+path = "src/test/mod.rs"
 
 [lib]
 name = "wrappers"

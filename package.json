@@ -15,7 +15,7 @@
     "test": "cd src/lib; cargo run --bin private-id-test",
     "build": "wasm-pack build --release --no-typescript --target no-modules; npm run-script link-web",
     "build-debug": "wasm-pack build --debug --no-typescript --target no-modules; npm run-script link-web",
-    "link-web": "cp pkg/privateid.js web; cp pkg/privateid_bg.wasm web"
+    "link-web": "cp pkg/privateid.js web/util/wasm_bindgen.js; cp pkg/privateid_bg.wasm web/bin/privateid.wasm"
   },
   "repository": {
     "type": "git",
