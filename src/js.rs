@@ -4,6 +4,8 @@ use self::crypto::prelude::Bytes;
 use serde_json::json;
 use serde_json::from_str;
 
+use compressed_string::ComprString;
+
 pub trait JSON {
     fn to_json(&self) -> String;
     fn from_json(s: String) -> Self;
@@ -16,6 +18,23 @@ impl JSON for Bytes {
 
     fn from_json(s: String) -> Self {
         from_str(&s).unwrap()
+    }
+}
+
+pub trait JSON_GZ {
+    fn to_json_gz(&self) -> String;
+    fn from_json_gz(s: String) -> Self;
+}
+
+impl JSON_GZ for Bytes {
+    fn to_json_gz(&self) -> String {
+        let str = &format!("{}", json!(self));
+        format!("{}", json!(ComprString::new(str)))
+    }
+
+    fn from_json_gz(s: String) -> Self {
+        let compr: ComprString = from_str(&s).unwrap();
+        from_str(&compr.to_string()).unwrap()
     }
 }
 
