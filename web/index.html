@@ -11,6 +11,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
   <script type="text/javascript" src="util/wasm_bindgen.js" type="module"></script>
   <script type="text/javascript" src="util/canaries.js"></script>
+  <script type="text/javascript" src="lib/private_id.js"></script>
+<!--  <script type="text/javascript" src="common/ui.js"></script>-->
+  <script type="text/javascript" src="common/sheet.js"></script>
+  <script type="text/javascript" src="common/io.js"></script>
+  <script type="text/javascript" src="common/demo.js"></script>
+<!--  <script type="text/javascript" src="common/ui.js"></script>-->
   <style>
     html { font-size:14px; }
 
@@ -22,9 +28,10 @@
     .border-bottom { border-bottom:1px solid #e5e5e5; }
     .box-shadow { box-shadow:0 .25rem .75rem rgba(0, 0, 0, .05); }
 
+    table { font-size:14px; }
     input { font-size:14px; padding:3px; }
     .sheet { display:inline-block; }
-    .handsontable td { font-size:11px; }
+    .handsontable td { font-size:12px;  }
     .bd-example-modal-lg .modal-dialog {
       display:table;
       position:relative;
@@ -127,9 +134,9 @@
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <input type="checkbox" id="receive" name="receive" value="receive" onclick="demo.clear();" checked/>
         <label for="receive">Receive results</label>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <input type="checkbox" id="quantitative" name="quantitative" value="quantitative" onclick="demo.clear();"/>
-        <label for="quantitative">Quantitative</label>
+        <label for="quantitative">Quantitative</label>-->
       </div>
       <div class="card-body">
         <div id="status-other" class="status"></div>
@@ -148,9 +155,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
         integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <!--<script src="sizes.js"></script>-->
-<script type="text/javascript" src="lib/private_id.js"></script>
-<script type="text/javascript" src="common/ui.js"></script>
-<script type="text/javascript" src="common/demo.js"></script>
 <script type="text/javascript" src="common/mpc.js"></script>
 </body>
 </html>
