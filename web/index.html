@@ -2,7 +2,7 @@
 <head>
   <meta charset="utf-8" content="text/html;charset=utf-8" http-equiv="Content-Type"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Nth Party: Join-Filter-Aggregate</title>
+  <title>Nth Party: Secret Align</title>
   <meta name="description" content="">
   <meta name="author" content="">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
@@ -12,11 +12,9 @@
   <script type="text/javascript" src="util/wasm_bindgen.js" type="module"></script>
   <script type="text/javascript" src="util/canaries.js"></script>
   <script type="text/javascript" src="lib/private_id.js"></script>
-<!--  <script type="text/javascript" src="common/ui.js"></script>-->
   <script type="text/javascript" src="common/sheet.js"></script>
   <script type="text/javascript" src="common/io.js"></script>
   <script type="text/javascript" src="common/demo.js"></script>
-<!--  <script type="text/javascript" src="common/ui.js"></script>-->
   <style>
     html { font-size:14px; }
 
@@ -72,7 +70,7 @@
 
 <!-- Title and navigation menu. -->
 <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-  <h5 class="my-0 mr-md-auto font-weight-normal">Join &dash; Filter &dash; Aggregate</h5>
+  <h5 class="my-0 mr-md-auto font-weight-normal">Align Data Sets using Private IDs</h5>
   <nav class="my-2 my-md-0 mr-md-3">
     <!-- <a class="p-2 text-dark" href="#"> -->
     <input type="button" value="Clear all messages" onclick="demo.clear_all_messages();"/>
@@ -105,9 +103,9 @@
 
     <div id="card_this" class="card mb-4 box-shadow">
       <div class="card-header">
-        <h4 class="my-0 font-weight-normal" style="display:inline;">Your code:</h4>
+        <h4 class="my-0 font-weight-normal" style="display:inline;">You<!-- code:--></h4><!--
         <input id="id-self" type="text" name="id-self" style="width:70px; cursor:default;" readonly/>
-        <input id="id-self-copy" type="button" value="Copy" data-clipboard-target="#id-self"/>
+        <input id="id-self-copy" type="button" value="Copy" data-clipboard-target="#id-self"/>-->
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <input id="this_rows" class="this_data_dim" type="number" name="this_rows" style="width:60px;" value="30"/>
         &#215;
@@ -129,11 +127,11 @@
 
     <div id="card_other" class="card mb-4 box-shadow">
       <div class="card-header">
-        <h4 class="my-0 font-weight-normal" style="display:inline;">Partner code:</h4>
-        <input type="text" id="id-other" name="id-other" style="width:70px;"/>
+        <h4 class="my-0 font-weight-normal" style="display:inline;">Partner<!-- code:--></h4><!--
+        <input type="text" id="id-other" name="id-other" style="width:70px;"/>-->
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="checkbox" id="receive" name="receive" value="receive" onclick="demo.clear();" checked/>
-        <label for="receive">Receive results</label>
+        <!--<input type="checkbox" id="receive" name="receive" value="receive" onclick="demo.clear();" checked/>
+        <label for="receive">Receive results</label>-->
         <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <input type="checkbox" id="quantitative" name="quantitative" value="quantitative" onclick="demo.clear();"/>
         <label for="quantitative">Quantitative</label>-->
