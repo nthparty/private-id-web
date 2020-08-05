@@ -81,8 +81,8 @@ function Demo() {
             if (args.length === 2) {
                 var id_self = args[0].replace("this=", "");
                 var id_other = args[1].replace("other=", "");
-                // document.getElementById('id-self').value = id_self;
-                // document.getElementById('id-other').value = id_other;
+                document.getElementById('id-self').value = id_self;
+                document.getElementById('id-other').value = id_other;
                 setTimeout(function () {
                     $('#tab_i_am_party_' + (a_or_b?'a':'b')).click();
                 }, 0);
@@ -129,11 +129,11 @@ function Demo() {
     }
 
     this.initialize = function () {
-        // // Generate or parse contributor codes.
-        // if (!self.idsFromURL()) {
-        //     var id_self = self.idCreate();
-        //     document.getElementById('id-self').value = id_self;
-        // }
+        // Generate or parse contributor codes.
+        if (!self.idsFromURL()) {
+            var id_self = self.idCreate();
+            document.getElementById('id-self').value = id_self;
+        }
 
         // Input/output spreadsheets.
         $("#sheet-self").hide();
