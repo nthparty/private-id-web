@@ -290,11 +290,11 @@ pub fn company_stage_1(company_input: String) -> String {
 pub fn partner_stage_2(u_company_json: String) -> String {
     console_log("2p");
     progress(30);
-    info("partner_phase_2");
+    info("Permuting partner's data...");
     let u_company = Bytes::from_json_gz(u_company_json);
 
+    info("Permuting and encrypting the company's data with the partner's own keys...");
     let (u_partner, e_company, v_company) = partner_phase_2(u_company);
-    info("partner_phase_2 complete.  Continuing...");
     progress(40);
 
     let mut json = "".to_owned();
@@ -304,6 +304,7 @@ pub fn partner_stage_2(u_company_json: String) -> String {
     json.push_str("|");
     json.push_str(&v_company.to_json_gz());
     console_log("2p");
+    info("Waiting for the company to compute our symmetric set difference...");
     json
 }
 
@@ -311,7 +312,7 @@ pub fn partner_stage_2(u_company_json: String) -> String {
 pub fn company_stage_2(u_partner_json: String, e_company_json: String, v_company_json: String) -> String {
     console_log("2c");
     progress(30);
-    info("company_phase_2");
+    info("Calculating symmetric set difference between the company's and partner's data..");
     let (u_partner, e_company, v_company) = (
         Bytes::from_json_gz(u_partner_json),
         Bytes::from_json_gz(e_company_json),
@@ -319,7 +320,7 @@ pub fn company_stage_2(u_partner_json: String, e_company_json: String, v_company
     );
 
     let (v_partner, s_prime_partner, s_prime_company) = company_phase_2(u_partner, e_company, v_company);
-    info("company_phase_2 complete.  Continuing...");
+    info("Sent set difference to the partner.  Continuing...");
     progress(40);
 
     let mut json = "".to_owned();
@@ -336,14 +337,14 @@ pub fn company_stage_2(u_partner_json: String, e_company_json: String, v_company
 pub fn partner_stage_3(s_prime_partner_json: String) -> String {
     console_log("3p");
     progress(60);
-    info("partner_phase_3");
+    info("Encrypting the data we have again.");
     let s_prime_partner = Bytes::from_json_gz(s_prime_partner_json);
 
     let s_double_prime_partner = partner_phase_3(s_prime_partner);
 
     let s_double_prime_partner_json = s_double_prime_partner.to_json_gz();
     console_log("3p");
-    info("partner_phase_3 complete.  Continuing...");
+    info("Waiting to receive the company's twice-encrypted data.");
     progress(75);
 
     s_double_prime_partner_json
@@ -353,14 +354,14 @@ pub fn partner_stage_3(s_prime_partner_json: String) -> String {
 pub fn company_stage_3(s_double_prime_partner_json: String, not_matched_val: String, use_row_numbers: bool) -> String {
     console_log("3c");
     progress(75);
-    info("company_stage_3 complete.  Continuing...");
+    info("Received back data that partner has and company doesn't.  Continuing....  Continuing...");
     let s_double_prime_partner = Bytes::from_json_gz(s_double_prime_partner_json);
 
     let not_matched_val = Option::Some(&not_matched_val as &str);
 
     let company_id_spine = company_phase_3(s_double_prime_partner, not_matched_val, use_row_numbers);
     console_log("3c");
-    info("company_stage_3 complete.  Continuing...");
+    info("Done.  Outputting the company's ID spine.  Printing...");
     progress(90);
 
     company_id_spine
@@ -370,7 +371,7 @@ pub fn company_stage_3(s_double_prime_partner_json: String, not_matched_val: Str
 pub fn partner_stage_4(v_partner_json: String, s_prime_company_json: String, not_matched_val: String, use_row_numbers: bool) -> String {
     console_log("4p");
     progress(80);
-    info("partner_phase_4 complete.  Continuing...");
+    info("Creating the ID spine from the company's data...");
     let (v_partner, s_prime_company) = (
         Bytes::from_json_gz(v_partner_json),
         Bytes::from_json_gz(s_prime_company_json)
@@ -380,7 +381,7 @@ pub fn partner_stage_4(v_partner_json: String, s_prime_company_json: String, not
 
     let partner_id_spine = partner_phase_4(v_partner, s_prime_company, not_matched_val, use_row_numbers);
     console_log("4p");
-    info("partner_phase_4 complete.  Done.  Outputting partner_id_spine.");
+    info("Done.  Outputting the partner's ID spine.");
     progress(90);
 
     partner_id_spine

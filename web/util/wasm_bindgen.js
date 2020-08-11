@@ -52,11 +52,14 @@ function getInt32Memory0() {
 */
 __exports.test = function(n) {
     try {
-        wasm.test(8, n);
-        var r0 = getInt32Memory0()[8 / 4 + 0];
-        var r1 = getInt32Memory0()[8 / 4 + 1];
+        const retptr = wasm.__wbindgen_export_0.value - 16;
+        wasm.__wbindgen_export_0.value = retptr;
+        wasm.test(retptr, n);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
         return getStringFromWasm0(r0, r1);
     } finally {
+        wasm.__wbindgen_export_0.value += 16;
         wasm.__wbindgen_free(r0, r1);
     }
 };
@@ -67,11 +70,14 @@ __exports.test = function(n) {
 */
 __exports.test_stages = function(n) {
     try {
-        wasm.test_stages(8, n);
-        var r0 = getInt32Memory0()[8 / 4 + 0];
-        var r1 = getInt32Memory0()[8 / 4 + 1];
+        const retptr = wasm.__wbindgen_export_0.value - 16;
+        wasm.__wbindgen_export_0.value = retptr;
+        wasm.test_stages(retptr, n);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
         return getStringFromWasm0(r0, r1);
     } finally {
+        wasm.__wbindgen_export_0.value += 16;
         wasm.__wbindgen_free(r0, r1);
     }
 };
@@ -145,13 +151,16 @@ __exports.partner_stage_1 = function(partner_input) {
 */
 __exports.company_stage_1 = function(company_input) {
     try {
+        const retptr = wasm.__wbindgen_export_0.value - 16;
+        wasm.__wbindgen_export_0.value = retptr;
         var ptr0 = passStringToWasm0(company_input, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len0 = WASM_VECTOR_LEN;
-        wasm.company_stage_1(8, ptr0, len0);
-        var r0 = getInt32Memory0()[8 / 4 + 0];
-        var r1 = getInt32Memory0()[8 / 4 + 1];
+        wasm.company_stage_1(retptr, ptr0, len0);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
         return getStringFromWasm0(r0, r1);
     } finally {
+        wasm.__wbindgen_export_0.value += 16;
         wasm.__wbindgen_free(r0, r1);
     }
 };
@@ -162,13 +171,16 @@ __exports.company_stage_1 = function(company_input) {
 */
 __exports.partner_stage_2 = function(u_company_json) {
     try {
+        const retptr = wasm.__wbindgen_export_0.value - 16;
+        wasm.__wbindgen_export_0.value = retptr;
         var ptr0 = passStringToWasm0(u_company_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len0 = WASM_VECTOR_LEN;
-        wasm.partner_stage_2(8, ptr0, len0);
-        var r0 = getInt32Memory0()[8 / 4 + 0];
-        var r1 = getInt32Memory0()[8 / 4 + 1];
+        wasm.partner_stage_2(retptr, ptr0, len0);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
         return getStringFromWasm0(r0, r1);
     } finally {
+        wasm.__wbindgen_export_0.value += 16;
         wasm.__wbindgen_free(r0, r1);
     }
 };
@@ -181,17 +193,20 @@ __exports.partner_stage_2 = function(u_company_json) {
 */
 __exports.company_stage_2 = function(u_partner_json, e_company_json, v_company_json) {
     try {
+        const retptr = wasm.__wbindgen_export_0.value - 16;
+        wasm.__wbindgen_export_0.value = retptr;
         var ptr0 = passStringToWasm0(u_partner_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len0 = WASM_VECTOR_LEN;
         var ptr1 = passStringToWasm0(e_company_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len1 = WASM_VECTOR_LEN;
         var ptr2 = passStringToWasm0(v_company_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len2 = WASM_VECTOR_LEN;
-        wasm.company_stage_2(8, ptr0, len0, ptr1, len1, ptr2, len2);
-        var r0 = getInt32Memory0()[8 / 4 + 0];
-        var r1 = getInt32Memory0()[8 / 4 + 1];
+        wasm.company_stage_2(retptr, ptr0, len0, ptr1, len1, ptr2, len2);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
         return getStringFromWasm0(r0, r1);
     } finally {
+        wasm.__wbindgen_export_0.value += 16;
         wasm.__wbindgen_free(r0, r1);
     }
 };
@@ -202,13 +217,16 @@ __exports.company_stage_2 = function(u_partner_json, e_company_json, v_company_j
 */
 __exports.partner_stage_3 = function(s_prime_partner_json) {
     try {
+        const retptr = wasm.__wbindgen_export_0.value - 16;
+        wasm.__wbindgen_export_0.value = retptr;
         var ptr0 = passStringToWasm0(s_prime_partner_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len0 = WASM_VECTOR_LEN;
-        wasm.partner_stage_3(8, ptr0, len0);
-        var r0 = getInt32Memory0()[8 / 4 + 0];
-        var r1 = getInt32Memory0()[8 / 4 + 1];
+        wasm.partner_stage_3(retptr, ptr0, len0);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
         return getStringFromWasm0(r0, r1);
     } finally {
+        wasm.__wbindgen_export_0.value += 16;
         wasm.__wbindgen_free(r0, r1);
     }
 };
@@ -221,15 +239,18 @@ __exports.partner_stage_3 = function(s_prime_partner_json) {
 */
 __exports.company_stage_3 = function(s_double_prime_partner_json, not_matched_val, use_row_numbers) {
     try {
+        const retptr = wasm.__wbindgen_export_0.value - 16;
+        wasm.__wbindgen_export_0.value = retptr;
         var ptr0 = passStringToWasm0(s_double_prime_partner_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len0 = WASM_VECTOR_LEN;
         var ptr1 = passStringToWasm0(not_matched_val, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len1 = WASM_VECTOR_LEN;
-        wasm.company_stage_3(8, ptr0, len0, ptr1, len1, use_row_numbers);
-        var r0 = getInt32Memory0()[8 / 4 + 0];
-        var r1 = getInt32Memory0()[8 / 4 + 1];
+        wasm.company_stage_3(retptr, ptr0, len0, ptr1, len1, use_row_numbers);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
         return getStringFromWasm0(r0, r1);
     } finally {
+        wasm.__wbindgen_export_0.value += 16;
         wasm.__wbindgen_free(r0, r1);
     }
 };
@@ -243,17 +264,20 @@ __exports.company_stage_3 = function(s_double_prime_partner_json, not_matched_va
 */
 __exports.partner_stage_4 = function(v_partner_json, s_prime_company_json, not_matched_val, use_row_numbers) {
     try {
+        const retptr = wasm.__wbindgen_export_0.value - 16;
+        wasm.__wbindgen_export_0.value = retptr;
         var ptr0 = passStringToWasm0(v_partner_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len0 = WASM_VECTOR_LEN;
         var ptr1 = passStringToWasm0(s_prime_company_json, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len1 = WASM_VECTOR_LEN;
         var ptr2 = passStringToWasm0(not_matched_val, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len2 = WASM_VECTOR_LEN;
-        wasm.partner_stage_4(8, ptr0, len0, ptr1, len1, ptr2, len2, use_row_numbers);
-        var r0 = getInt32Memory0()[8 / 4 + 0];
-        var r1 = getInt32Memory0()[8 / 4 + 1];
+        wasm.partner_stage_4(retptr, ptr0, len0, ptr1, len1, ptr2, len2, use_row_numbers);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
         return getStringFromWasm0(r0, r1);
     } finally {
+        wasm.__wbindgen_export_0.value += 16;
         wasm.__wbindgen_free(r0, r1);
     }
 };
@@ -282,16 +306,22 @@ function getArrayU32FromWasm0(ptr, len) {
 * @returns {Uint32Array}
 */
 __exports.permute = function(p, a) {
-    var ptr0 = passArray32ToWasm0(p, wasm.__wbindgen_malloc);
-    var len0 = WASM_VECTOR_LEN;
-    var ptr1 = passArray32ToWasm0(a, wasm.__wbindgen_malloc);
-    var len1 = WASM_VECTOR_LEN;
-    wasm.permute(8, ptr0, len0, ptr1, len1);
-    var r0 = getInt32Memory0()[8 / 4 + 0];
-    var r1 = getInt32Memory0()[8 / 4 + 1];
-    var v2 = getArrayU32FromWasm0(r0, r1).slice();
-    wasm.__wbindgen_free(r0, r1 * 4);
-    return v2;
+    try {
+        const retptr = wasm.__wbindgen_export_0.value - 16;
+        wasm.__wbindgen_export_0.value = retptr;
+        var ptr0 = passArray32ToWasm0(p, wasm.__wbindgen_malloc);
+        var len0 = WASM_VECTOR_LEN;
+        var ptr1 = passArray32ToWasm0(a, wasm.__wbindgen_malloc);
+        var len1 = WASM_VECTOR_LEN;
+        wasm.permute(retptr, ptr0, len0, ptr1, len1);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
+        var v2 = getArrayU32FromWasm0(r0, r1).slice();
+        wasm.__wbindgen_free(r0, r1 * 4);
+        return v2;
+    } finally {
+        wasm.__wbindgen_export_0.value += 16;
+    }
 };
 
 /**
@@ -303,17 +333,20 @@ __exports.permute = function(p, a) {
 */
 __exports.run = function(partner_input, company_input, not_matched_val, use_row_numbers) {
     try {
+        const retptr = wasm.__wbindgen_export_0.value - 16;
+        wasm.__wbindgen_export_0.value = retptr;
         var ptr0 = passStringToWasm0(partner_input, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len0 = WASM_VECTOR_LEN;
         var ptr1 = passStringToWasm0(company_input, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len1 = WASM_VECTOR_LEN;
         var ptr2 = passStringToWasm0(not_matched_val, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         var len2 = WASM_VECTOR_LEN;
-        wasm.run(8, ptr0, len0, ptr1, len1, ptr2, len2, use_row_numbers);
-        var r0 = getInt32Memory0()[8 / 4 + 0];
-        var r1 = getInt32Memory0()[8 / 4 + 1];
+        wasm.run(retptr, ptr0, len0, ptr1, len1, ptr2, len2, use_row_numbers);
+        var r0 = getInt32Memory0()[retptr / 4 + 0];
+        var r1 = getInt32Memory0()[retptr / 4 + 1];
         return getStringFromWasm0(r0, r1);
     } finally {
+        wasm.__wbindgen_export_0.value += 16;
         wasm.__wbindgen_free(r0, r1);
     }
 };
@@ -396,19 +429,13 @@ async function init(input) {
     imports.wbg.__wbg_progressmessage_01b1e7f0d5e8f303 = function(arg0, arg1) {
         __rust__.progress_message(getStringFromWasm0(arg0, arg1));
     };
-    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
-        takeObject(arg0);
-    };
-    imports.wbg.__wbg_getRandomValues_f5e14ab7ac8e995d = function(arg0, arg1, arg2) {
-        getObject(arg0).getRandomValues(getArrayU8FromWasm0(arg1, arg2));
-    };
-    imports.wbg.__wbg_randomFillSync_d5bd2d655fdf256a = function(arg0, arg1, arg2) {
-        getObject(arg0).randomFillSync(getArrayU8FromWasm0(arg1, arg2));
-    };
     imports.wbg.__wbg_self_1b7a39e3a92c949c = handleError(function() {
         var ret = self.self;
         return addHeapObject(ret);
     });
+    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
+        takeObject(arg0);
+    };
     imports.wbg.__wbg_require_604837428532a733 = function(arg0, arg1) {
         var ret = require(getStringFromWasm0(arg0, arg1));
         return addHeapObject(ret);
@@ -424,6 +451,12 @@ async function init(input) {
     imports.wbg.__wbg_getRandomValues_a3d34b4fee3c2869 = function(arg0) {
         var ret = getObject(arg0).getRandomValues;
         return addHeapObject(ret);
+    };
+    imports.wbg.__wbg_getRandomValues_f5e14ab7ac8e995d = function(arg0, arg1, arg2) {
+        getObject(arg0).getRandomValues(getArrayU8FromWasm0(arg1, arg2));
+    };
+    imports.wbg.__wbg_randomFillSync_d5bd2d655fdf256a = function(arg0, arg1, arg2) {
+        getObject(arg0).randomFillSync(getArrayU8FromWasm0(arg1, arg2));
     };
 
     if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {
