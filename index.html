@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="lib/sodium.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
   <script type="text/javascript" src="util/wasm_bindgen.js" type="module"></script>
   <script type="text/javascript" src="util/canaries.js"></script>
@@ -111,7 +112,7 @@
         &#215;
         <input id="this_cols" class="this_data_dim" type="number" name="this_cols" style="width:40px;" value="3"/>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="button" value="Contribute" onclick="demo.contribute();"/>
+        <input id="ContributeButton" type="button" value="Contribute" onclick="demo.contribute();" disabled/>
       </div>
       <div class="card-body">
         <div id="status-this" class="status">
