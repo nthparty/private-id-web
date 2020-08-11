@@ -57,6 +57,9 @@ var mapCallbackProgress = function (fn, arr, callback, index, arr_) {
 
 var mapCallback = mapCallbackProgress;
 
+var self_id = '';
+var other_id = '';
+
 function Demo() {
     // Demo state.
     this.sheets = new Sheets(this);
@@ -107,10 +110,10 @@ function Demo() {
             this.set_role(a_or_b? 'a' : 'b');
             args.sort(() => a_or_b?1:-1);  // Sort so that 'this' is first, and 'other' is second.  // -OR- `e => e.includes('this')?-1:1`
             if (args.length === 2) {
-                var id_self = args[0].replace("this=", "");
-                var id_other = args[1].replace("other=", "");
-                document.getElementById('id-self').value = id_self;
-                document.getElementById('id-other').value = id_other;
+                var self_id = args[0].replace("this=", "");
+                var other_id = args[1].replace("other=", "");
+                document.getElementById('id-self').value = self_id;
+                document.getElementById('id-other').value = other_id;
                 return true;
             } else {
                 return false;
@@ -122,12 +125,6 @@ function Demo() {
     };
 
     this.stages = function (stage) {
-        // var id_self = document.getElementById('id-self').value;
-        // var id_other = document.getElementById('id-other').value;
-        // var roles = // Determine if this contributor is also a recipient.
-        //     ["contributor"] +
-        //     ($("#receive").is(':checked') ? ["recipient"] : []);
-
         let a_or_b = $('#tab_i_am_party_a').is('.active');
         console.time('run');
         (a_or_b? partner : company)().then(function (id_spine) {
@@ -156,8 +153,8 @@ function Demo() {
     this.initialize = function () {
         // Generate or parse contributor codes.
         if (!self.idsFromURL()) {
-            var id_self = self.idCreate();
-            document.getElementById('id-self').value = id_self;
+            self_id = self.idCreate();
+            document.getElementById('id-self').value = self_id;
         }
 
         // Button to copy contributor code to clipboard.
@@ -190,7 +187,9 @@ function Demo() {
         self.progress.setPercent(0);
         $(".modal").modal("show");
         $("#progress-message").text("Gathering data from interface.");
-        setTimeout(function () { self.stages(0); }, 250);
+        setTimeout(function () { self.stages(); }, 250);
+        self_id = document.getElementById('id-self').value;
+        other_id = document.getElementById('id-other').value;
     };
 
     this.clear_all_messages = function (self_id, other_id) {
@@ -198,6 +197,12 @@ function Demo() {
             self_id = document.getElementById('id-self').value;
             other_id = document.getElementById('id-other').value;
         }
+
+        pair_clear('u_company_json');
+        pair_clear('u_e_v_json');
+        pair_clear('v_s_s_json');
+        pair_clear('s_double_prime_partner_json');
+
         console.log("Cleared all messages for id pair '" + self_id + "'/'" + other_id + "'.");
     };
 }
