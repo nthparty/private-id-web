@@ -43,7 +43,7 @@ const compress = m => m.split('|').map(x => JSON.parse(x).gz.map(n => (n).toStri
 const expand = c => c.split('|').map(x => JSON.stringify({gz: x.match(new RegExp('.{1,2}', 'g')).map(s => parseInt(s, 36))})).join('|');
 
 function give(tag, msg, json_gz = true, overwrite = true) {
-    console.log('give', tag, msg);
+    // console.log('give', tag, msg);
     if (json_gz) {
         msg = compress(msg);
     }
@@ -51,7 +51,7 @@ function give(tag, msg, json_gz = true, overwrite = true) {
 }
 
 function get(tag, json_gz = true) {
-    console.log('get', tag);
+    // console.log('get', tag);
     return new Promise(function (resolve) {
         let node = __collection.orderByChild('tag').equalTo(tag);
         node.once("value", function (response) {
@@ -65,7 +65,7 @@ function get(tag, json_gz = true) {
                 firebase.database().ref('channel-private-id/' + last_key).remove();
 
                 let msg = (json_gz? expand : m => m)(last_msg.msg)
-                console.log('got', tag, msg);
+                // console.log('got', tag, msg);
                 resolve(msg);
             } else {
                 setTimeout(function () {
