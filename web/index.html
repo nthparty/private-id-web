@@ -1,159 +1,211 @@
+<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" content="text/html;charset=utf-8" http-equiv="Content-Type"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Nth Party: Secret Align</title>
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <script src="lib/sodium.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
-  <script type="text/javascript" src="util/wasm_bindgen.js" type="module"></script>
-  <script type="text/javascript" src="util/canaries.js"></script>
-  <script type="text/javascript" src="lib/private_id.js"></script>
-  <script type="text/javascript" src="common/sheet.js"></script>
-  <script type="text/javascript" src="common/io.js"></script>
-  <script type="text/javascript" src="common/demo.js"></script>
-  <style>
-    html { font-size:14px; }
+  <head>
+    <meta charset="utf-8" content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Nth Party, Ltd.">
+    <meta name="author" content="Nth Party, Ltd.">
+    <title>Nth Party: Private ID Web</title>
+    <link href="//fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <script>
+var favIcon = "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";
+var docHead = document.getElementsByTagName('head')[0];
+var newLink = document.createElement('link');
+newLink.rel = 'shortcut icon';
+newLink.type = 'image/x-icon';
+newLink.href = 'data:image/png;base64,'+favIcon;
+docHead.appendChild(newLink);
+    </script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="lib/sodium.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js"></script>
+    <script type="text/javascript" src="util/wasm_bindgen.js" type="module"></script>
+    <script type="text/javascript" src="util/canaries.js"></script>
+    <script type="text/javascript" src="lib/private_id.js"></script>
+    <script type="text/javascript" src="common/sheet.js"></script>
+    <script type="text/javascript" src="common/io.js"></script>
+    <script type="text/javascript" src="common/demo.js"></script>
+    <style>
+html { font-size:14px; font-family:'Montserrat',sans-serif; min-width:1160px !important; }
+body { min-width:1160px !important; }
 
-    .container { max-width:1160px; }
-    .card-deck .card { min-width:350px; }
-    .card-header { text-align:left; }
-    .card-body { text-align:center; }
-    .border-top { border-top:1px solid #e5e5e5; }
-    .border-bottom { border-bottom:1px solid #e5e5e5; }
-    .box-shadow { box-shadow:0 .25rem .75rem rgba(0, 0, 0, .05); }
+#logo { display:inline-block; margin-top:-30px; padding-right:10px; margin-right:10px; border-right:1px solid #3d1733; }
+#name { display:inline-block; font-size:25px; color:#d49d48; position:relative; top:3px; font-family:'Montserrat',sans-serif; }
 
-    table { font-size:14px; }
-    input { font-size:14px; padding:3px; }
-    .sheet { display:inline-block; }
-    .handsontable td { font-size:12px;  }
-    .bd-example-modal-lg .modal-dialog {
-      display:table;
-      position:relative;
-      margin:0 auto;
-      top:calc(50% - 24px);
-    }
-    .bd-example-modal-lg .modal-dialog .modal-content {
-      background-color: transparent;
-      border: none;
-    }
-    .status { margin-bottom:15px; font-weight:normal; }
-    .progress { height:30px; width:100%; }
-    #progress-message { margin-top:10px; color:#FFFFFF; text-align:center; }
-  </style>
-  <!--<script src="libsodium-wrappers-sumo.js"></script>-->
-  <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-database.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/handsontable@7.3.0/dist/handsontable.full.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/handsontable@7.3.0/dist/handsontable.full.min.css" rel="stylesheet" media="screen">
-</head>
-<body onload="demo.initialize();">
+.container { max-width:1160px; }
+.card-deck .card { min-width:350px; }
+.card-header { text-align:left; }
+.card-body { text-align:center; }
+.border-top { border-top:1px solid #e5e5e5; }
+.border-bottom { border-bottom:1px solid #e5e5e5; }
+.box-shadow { box-shadow:0 .25rem .75rem rgba(0, 0, 0, .05); }
+.card-header { padding-top:14px; border-top:1px solid #B092A8; border-left:1px solid #B092A8; border-right:1px solid #B092A8; }
+.card-body { border:1px solid #B092A8; }
+#card-other { background-color:#E5E3E7; }
 
-<!-- Loading/waiting/progress modal. -->
-<div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content" style="min-width:400px;">
-      <!--span class="fa fa-spinner fa-spin fa-3x"></span-->
-      <div class="progress">
-        <div id="progress-overall-bar" class="progress-bar progress-bar-striped progress-bar-animated"
-             role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+input { font-size:14px; padding:3px; }
+table { font-size:14px; }
+.sheet { display:inline-block; }
+.handsontable td { font-size:11px; }
+.bd-example-modal-lg .modal-dialog {
+  display:table;
+  position:relative;
+  margin:0 auto;
+  top:calc(50% - 24px);
+}
+.bd-example-modal-lg .modal-dialog .modal-content {
+  background-color: transparent;
+  border: none;
+}
+.modal-content { min-width:400px; }
+.progress-bar { background-color:#d49d48; }
+
+.status { margin-bottom:15px; font-weight:normal; }
+.progress { height:30px; width:100%; }
+#progress-message { margin-top:10px; color:#FFFFFF; text-align:center; }
+
+.button { font-family:'Montserrat',sans-serif; font-size:14px; background-color:#3d1733; color:#FFFFFF; padding:5px 10px 3px 10px; border:1px solid #727577; }
+.button:hover { background-color:#d49d48; }
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.status { font-family:'Montserrat',sans-serif; font-size:12px; }
+label { font-family:'Montserrat',sans-serif; font-size:14px; }
+.id-label { font-family:'Montserrat',sans-serif; font-size:16px; font-family:'Montserrat',sans-serif; color:#3d173; display:inline; }
+#id-self { width:70px; cursor:default; }
+#id-other { width:70px; }
+#this_rows { width:60px; }
+#this_cols { width:40px; }
+.nav-link { font-family:'Montserrat',sans-serif; color:#3d1733 !important; }
+.nav-link:hover { color:#d49d48 !important; }
+.nav-link .active { color:#d49d48 !important; }
+    </style>
+    <!--<script src="libsodium-wrappers-sumo.js"></script>-->
+    <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.2/firebase-database.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore-min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handsontable@7.3.0/dist/handsontable.full.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/handsontable@7.3.0/dist/handsontable.full.min.css" rel="stylesheet" media="screen">
+  </head>
+  <body onload="demo.initialize();">
+
+    <!-- Loading/waiting/progress modal. -->
+    <div class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <!--span class="fa fa-spinner fa-spin fa-3x"></span-->
+          <div class="progress">
+            <div id="progress-overall-bar" class="progress-bar progress-bar-striped progress-bar-animated"
+                 role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+            </div>
+          </div>
+          <div id="progress-message"></div>
         </div>
       </div>
-      <div id="progress-message"></div>
     </div>
-  </div>
-</div>
 
-<!-- Title and navigation menu. -->
-<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-  <h5 class="my-0 mr-md-auto font-weight-normal">Align Data Sets using Private IDs</h5>
-  <nav class="my-2 my-md-0 mr-md-3">
-    <!-- <a class="p-2 text-dark" href="#"> -->
-    <input type="button" value="Clear all messages" onclick="demo.clear_all_messages();"/>
-    <!-- </a> -->
-  </nav>
-</div>
+    <!-- Title and navigation menu. -->
+    <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+      <h5 class="my-0 mr-md-auto font-weight-normal">
+           <div id="logo" class="noselect">
+             <img src="data:image/png;base64, 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" alt="Nth Party"/>
+           </div>
+           <div id="name" class="noselect"><b>private id web</b></div>
+      </h5>
+      <nav class="my-2 my-md-0 mr-md-3">
+        <!-- <a class="p-2 text-dark" href="#"> -->
+        <input type="button" class="button" value="Clear all messages" onclick="demo.clear_all_messages();"/>
+        <!-- </a> -->
+      </nav>
+    </div>
 
-<!--<div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-  <h1 class="display-4">{Title}</h1>
-  <p class="lead">{Subtitle}</p>
-</div>-->
-<br/><br/>
+    <!--<div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+      <h1 class="display-4">{Title}</h1>
+      <p class="lead">{Subtitle}</p>
+    </div>-->
+    <br/><br/>
 
-<div class="container">
+    <div class="container">
 
-  <!-- Party selection tabs (purely cosmetic rearranging of left and right panels). -->
-  <ul class="nav nav-tabs nav-fill">
-    <li class="nav-item">
-      <a id="tab_i_am_party_a" class="nav-link active" href="#">I am Party A</a>
-    </li>
-    <li class="nav-item">
-      <a id="tab_i_am_party_b" class="nav-link" href="#">I am Party B</a>
-    </li>
-  </ul>
+      <!-- Party selection tabs (purely cosmetic rearranging of left and right panels). -->
+      <ul class="nav nav-tabs nav-fill">
+        <li class="nav-item">
+          <a id="tab_i_am_party_a" class="nav-link active" href="#">I am Party A</a>
+        </li>
+        <li class="nav-item">
+          <a id="tab_i_am_party_b" class="nav-link" href="#">I am Party B</a>
+        </li>
+      </ul>
 
-  <br/><br/>
+      <br/><br/>
 
-  <!-- Input and results panels. -->
-  <div class="card-deck mb-3 text-center">
+      <!-- Input and results panels. -->
+      <div class="card-deck mb-3 text-center">
 
-    <div id="card_this" class="card mb-4 box-shadow">
-      <div class="card-header">
-        <h4 class="my-0 font-weight-normal" style="display:inline;">Your code:</h4>
-        <input id="id-self" type="text" name="id-self" style="width:70px; cursor:default;" readonly/>
-        <input id="id-self-copy" type="button" value="Copy" data-clipboard-target="#id-self"/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input id="this_rows" class="this_data_dim" type="number" name="this_rows" style="width:60px;" value="30"/>
-        &#215;
-        <input id="this_cols" class="this_data_dim" type="number" name="this_cols" style="width:40px;" value="3"/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input id="ContributeButton" type="button" value="Contribute" onclick="demo.contribute();" disabled/>
-      </div>
-      <div class="card-body">
-        <div id="status-this" class="status">
-          Your data contribution is below; load
-          <select name="data-random" id="data-random">
-            <option value="" disabled>&lt;choose&gt;</option>
-          </select>
-          rows of random data.
+        <div id="card_this" class="card mb-4 box-shadow">
+          <div class="card-header">
+            <h4 class="my-0 font-weight-normal noselect id-label">Your code:&nbsp;</h4>
+            <input id="id-self" type="text" name="id-self" readonly/>
+            <input id="id-self-copy" class="button" type="button" value="Copy" data-clipboard-target="#id-self"/>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input id="this_rows" class="this_data_dim" type="number" name="this_rows" value="30"/>
+            &#215;
+            <input id="this_cols" class="this_data_dim" type="number" name="this_cols" value="3"/>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input id="ContributeButton" type="button" class="button" value="Contribute" onclick="demo.contribute();" disabled/>
+          </div>
+          <div class="card-body">
+            <div id="status-this" class="status">
+              Your data contribution is below; load
+              <select name="data-random" id="data-random">
+                <option value="" disabled>&lt;choose&gt;</option>
+              </select>
+              rows of random data.
+            </div>
+            <div class="sheet" id="sheet-self"></div>
+          </div>
         </div>
-        <div class="sheet" id="sheet-self"></div>
+
+        <div id="card_other" class="card mb-4 box-shadow">
+          <div class="card-header">
+            <h4 class="my-0 font-weight-normal noselect id-label">
+              Partner code:&nbsp;
+            </h4>
+            <input type="text" id="id-other" name="id-other"/>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <!--<input type="checkbox" id="receive" name="receive" value="receive" onclick="demo.clear();" checked/>
+            <label for="receive">Receive results</label>-->
+            <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="checkbox" id="quantitative" name="quantitative" value="quantitative" onclick="demo.clear();"/>
+            <label for="quantitative">Quantitative</label>-->
+          </div>
+          <div id="card-other" class="card-body">
+            <div id="status-other" class="status"></div>
+            <div class="sheet" id="sheet-other"></div>
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <div id="card_other" class="card mb-4 box-shadow">
-      <div class="card-header">
-        <h4 class="my-0 font-weight-normal" style="display:inline;">Partner code:</h4>
-        <input type="text" id="id-other" name="id-other" style="width:70px;"/>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <!--<input type="checkbox" id="receive" name="receive" value="receive" onclick="demo.clear();" checked/>
-        <label for="receive">Receive results</label>-->
-        <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <input type="checkbox" id="quantitative" name="quantitative" value="quantitative" onclick="demo.clear();"/>
-        <label for="quantitative">Quantitative</label>-->
-      </div>
-      <div class="card-body">
-        <div id="status-other" class="status"></div>
-        <div class="sheet" id="sheet-other"></div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- Bootstrap core JavaScript placed at the end of the document for faster loading. -->
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<!--<script src="sizes.js"></script>-->
-<script type="text/javascript" src="common/mpc.js"></script>
-</body>
+    <!-- Bootstrap core JavaScript placed at the end of the document for faster loading. -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <!--<script src="sizes.js"></script>-->
+    <script type="text/javascript" src="common/mpc.js"></script>
+  </body>
 </html>
