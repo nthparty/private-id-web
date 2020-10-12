@@ -16,7 +16,7 @@ js-sys = "0.3.42"
 private-id-common = { package = "common", path = "src/lib/common" }
 private-id-crypto = { package = "crypto", path = "src/lib/crypto" }
 private-id-protocol = { package = "protocol", path = "src/lib/protocol" }
-private-id-wrappers = { package = "wrappers", path = "src/lib/wrappers" }
+private-id-wrappers = { package = "wrappers", path = "src" }
 serde_json = "1.0"
 compressed_string = { version = "1.0.0", features = ['with_serde'] }
 

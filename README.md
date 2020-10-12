@@ -26,7 +26,7 @@ npm test
 ```
 Alternatively, they can be invoked directly in the following way:
 ```shell
-cd src/lib; cargo run --bin private-id-test
+cd src; cargo run --bin private-id-test
 ```
 
 ## Running in the Browser

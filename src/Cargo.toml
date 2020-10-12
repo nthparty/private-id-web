@@ -6,19 +6,19 @@ edition = "2018"
 
 [[bin]]
 name = "private-id-test"
-path = "src/test/mod.rs"
+path = "wrappers/test/mod.rs"
 
 [lib]
 name = "wrappers"
-path = "src/lib.rs"
+path = "wrappers/lib.rs"
 
 [features]
 avx2 = ["crypto/avx2"]
 
 [dependencies]
-common = {path = "../common", version = "0.1.0"}
-crypto = {path = "../crypto", version = "0.1.0"}
-protocol = {path = "../protocol", version = "0.1.0"}
+common = {path = "lib/common", version = "0.1.0"}
+crypto = {path = "lib/crypto", version = "0.1.0"}
+protocol = {path = "lib/protocol", version = "0.1.0"}
 lazy_static = "0.2"
 
 env_logger = "0.7.1"
