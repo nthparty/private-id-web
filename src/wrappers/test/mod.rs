@@ -11,7 +11,7 @@ use wrappers::{
 };
 
 pub fn test(n: usize) -> String {
-    let not_matched_val: Option<&str> = Option::Some("Unknown");
+    let not_matched_val: Option<&String> = Option::Some("Unknown");
     let use_row_numbers = true;
 
     let mut data: String = "".to_owned();

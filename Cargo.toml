@@ -39,3 +39,7 @@ wasm-bindgen-test = "0.3.13"
 [profile]
 release = { opt-level = 3, lto = true }
 #debug = { opt-level = "s", debug = true }
+
+# Override paillier dependency becasue rust-gmp uses c-types that are currently unsupported in wasm.
+[patch."https://github.com/KZen-networks/rust-paillier"]
+paillier = { path = "wasm-patch" }

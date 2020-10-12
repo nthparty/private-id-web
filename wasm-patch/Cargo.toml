@@ -1,0 +1,13 @@
+[package]
+name = "paillier"
+version = "0.3.4"
+authors = []
+
+[features]
+default = []
+
+[dependencies]
+
+[dev-dependencies]
+
+[lib]

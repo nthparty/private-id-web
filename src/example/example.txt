@@ -1,0 +1,45 @@
+Private-ID $ cargo run --bin private-id-server -- --host 0.0.0.0:3001 --no-tls │ Private-ID $ cargo run --bin private-id-client -- --company localhost:3001
+ --use-row-numbers --input example/email_company.csv --stdout                  │ --no-tls --use-row-numbers --input example/email_partner.csv --stdout
+     Running `target/debug/private-id-server --host '0.0.0.0:3001' --no-tls -- │      Running `target/debug/private-id-client --company 'localhost:3001' --no-t
+use-row-numbers --input example/email_company.csv --stdout`                    │ ls --use-row-numbers --input example/email_partner.csv --stdout`
+                                                                               │
+-----BEGIN FULL VIEW-----                                                      │ -----BEGIN FULL VIEW-----
+0       raymond60@hotmail.com                                                  │ 0
+1       stephanie23@gmail.com                                                  │ 1
+2       william23@hotmail.com                                                  │ 2
+3                                                                              │ 3       miguel23@taylor-gilbert.com
+4       xcombs@yahoo.com                                                       │ 4       xcombs@yahoo.com
+5       erik44@gmail.com                                                       │ 5       erik44@gmail.com
+6       edwardsgeorge@gmail.com                                                │ 6
+7                                                                              │ 7       allentonya@barr.com
+8       sandra41@moody.com                                                     │ 8
+9       zlawrence@hotmail.com                                                  │ 9
+10                                                                             │ 10      mclaughlintina@reynolds.com
+11      rhernandez@thompson.com                                                │ 11      rhernandez@thompson.com
+12      robinfreeman@yahoo.com                                                 │ 12      robinfreeman@yahoo.com
+13      catherinedavis@hotmail.com                                             │ 13
+14      bryanttanner@hotmail.com                                               │ 14      bryanttanner@hotmail.com
+15      aaron59@jones.net                                                      │ 15
+16      showard@williamson-payne.net                                           │ 16      showard@williamson-payne.net
+17                                                                             │ 17      danielhernandez@hotmail.com
+18      sanderswilliam@watkins.org                                             │ 18      sanderswilliam@watkins.org
+19      willisalison@clark-williams.com                                        │ 19      willisalison@clark-williams.com
+20      rebeccajenkins@gmail.com                                               │ 20      rebeccajenkins@gmail.com
+21      brenda85@hotmail.com                                                   │ 21
+22      greenstephanie@yahoo.com                                               │ 22
+23      jacobparsons@reilly-ward.com                                           │ 23      jacobparsons@reilly-ward.com
+24                                                                             │ 24      marshallaustin@hotmail.com
+25      portermark@yahoo.com                                                   │ 25      portermark@yahoo.com
+26      moliver@rush.com                                                       │ 26
+27                                                                             │ 27      paul61@gmail.com
+28      bankscynthia@gmail.com                                                 │ 28      bankscynthia@gmail.com
+29      mooneyamanda@hotmail.com                                               │ 29
+30      woodcourtney@hotmail.com                                               │ 30      woodcourtney@hotmail.com
+31                                                                             │ 31      david97@gmail.com
+32      kim97@hotmail.com                                                      │ 32      kim97@hotmail.com
+33      nancyfields@irwin-sanders.com                                          │ 33      nancyfields@irwin-sanders.com
+34                                                                             │ 34      xmeza@white-ramsey.com
+35      joanna88@gmail.com                                                     │ 35      joanna88@gmail.com
+36      walshkenneth@richard.org                                               │ 36      walshkenneth@richard.org
+37      tyler77@yahoo.com                                                      │ 37      tyler77@yahoo.com
+-----END FULL VIEW-----                                                        │ -----END FULL VIEW-----

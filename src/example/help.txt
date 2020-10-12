@@ -1,0 +1,84 @@
+$ cargo run --bin private-id-client -- --help
+Private Id Client 0.1
+Private Id Protocol
+
+USAGE:
+    private-id-client [FLAGS] [OPTIONS] --company <company> <--output <output>|--stdout> <--no-tls|--tls-dir <tls-dir>|--tls-key <tls-key>>
+
+FLAGS:
+    -h, --help                  Prints help information
+        --input-with-headers    Indicates if the input CSV contains headers
+        --no-tls                Turns tls off
+    -u, --stdout                Prints the output to stdout rather than file
+        --use-row-numbers       Indicates if the output would consist row numbers instead of encrypted IDs
+    -V, --version               Prints version information
+
+OPTIONS:
+    -c, --company <company>                        Host path to connect to, ex: 0.0.0.0:3001
+    -i, --input <input>                            Path to input file with keys [default: input.csv]
+        --not-matched-value <not-matched-value>    Override the default placeholder value for non-matched records
+    -o, --output <output>                          Path to output file, output format: private-id, option(key)
+        --tls-ca <tls-ca>                          Path to root CA certificate issued cert and keys
+        --tls-cert <tls-cert>
+            Path to tls certificate (pem format), SINGLE cert, NO CHAINING, required by client as well
+
+        --tls-dir <tls-dir>
+            Path to directory with files with key, cert and ca.pem file
+
+                                client: client.key, client.pem, ca.pem
+
+                                server: server.key, server.pem, ca.pem
+
+
+        --tls-domain <tls-domain>                  Override TLS domain for SSL cert (if host is IP)
+        --tls-key <tls-key>                        Path to tls key (non-encrypted)
+
+$ cargo run --bin private-id-server -- --help
+Private Id Company 0.1
+Private Id Protocol
+
+USAGE:
+    private-id-server [FLAGS] [OPTIONS] --host <host> <--output <output>|--stdout> <--no-tls|--tls-dir <tls-dir>|--tls-key <tls-key>>
+
+FLAGS:
+    -h, --help                  Prints help information
+        --input-with-headers    Indicates if the input CSV contains headers
+        --no-tls                Turns tls off
+    -u, --stdout                Prints the output to stdout rather than file
+        --use-row-numbers       Indicates if the output would consist row numbers instead of encrypted IDs
+    -V, --version               Prints version information
+
+OPTIONS:
+        --host <host>                              Host path to connect to, ex: 0.0.0.0:3001
+    -i, --input <input>                            Path to input file with keys [default: input.csv]
+        --not-matched-value <not-matched-value>    Override the default placeholder value for non-matched records
+    -o, --output <output>                          Path to output file, output format: private-id, option(key)
+        --tls-ca <tls-ca>                          Path to root CA certificate issued cert and keys
+        --tls-cert <tls-cert>
+            Path to tls certificate (pem format), SINGLE cert, NO CHAINING, required by client as well
+
+        --tls-dir <tls-dir>
+            Path to directory with files with key, cert and ca.pem file
+
+                                client: client.key, client.pem, ca.pem
+
+                                server: server.key, server.pem, ca.pem
+
+
+        --tls-key <tls-key>                        Path to tls key (non-encrypted)
+
+$ cargo run --bin datagen -- --help
+Protocol testing 0.1
+Permutations testing
+
+USAGE:
+    datagen [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+
+OPTIONS:
+    -c, --cols <COLS>    extra columns [default: 0]
+    -d, --dir <DIR>      output dir [default: ./]
+    -n, --size <SIZE>    size_of_dataset [default: 10]

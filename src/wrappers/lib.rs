@@ -22,7 +22,7 @@ lazy_static! {
 }
 
 pub fn partner_step_2(partner_input: &str) {
-    if MUT!(PARTNER).load_data(partner_input, false).unwrap() == false {
+    if MUT!(PARTNER).load_json(partner_input, false).unwrap() == false {
         panic!("Attempted to run the protocol after the text was already initialized.");
         /* default the PartnerPrivateId instance here if we want to allow reruns */
     }
@@ -37,9 +37,9 @@ pub fn partner_step_4() -> Bytes {
 }
 
 pub fn company_step_5(company_input: &str) {
-    if MUT!(COMPANY).load_data(company_input, false) == false {
-        panic!("Attempted to run the protocol after the text was already initialized.");
-        /* default the CompanyPrivateId instance here if we want to allow reruns */
+    if MUT!(COMPANY).load_json(company_input, false) == false {
+       panic!("Attempted to run the protocol after the text was already initialized.");
+       /* default the CompanyPrivateId instance here if we want to allow reruns */
     }
     // MUT!(COMPANY).gen_permute_pattern().unwrap();
 }
@@ -81,7 +81,7 @@ pub fn company_step_13() -> Bytes {
 }
 
 pub fn company_step_14(s_prime_partner: Bytes, not_matched_val: Option<&str>) {
-    MUT!(COMPANY).write_partner_to_id_map(s_prime_partner, not_matched_val).unwrap();
+    MUT!(COMPANY).write_partner_to_id_map(s_prime_partner, not_matched_val.map(String::from).as_ref()).unwrap();
 }
 
 pub fn company_step_15() {
