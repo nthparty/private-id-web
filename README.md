@@ -9,6 +9,11 @@ The build process for this project requires [Rust](https://www.rust-lang.org/too
 cargo install wasm-pack
 ```
 
+Don't forget to initialize the [original Private-ID source](https://github.com/facebookresearch/Private-ID)!
+```shell
+git submodule init
+```
+
 ## Build Process
 The build process can be invoked in the following way via the Node package definitions:
 ```shell
@@ -35,6 +40,10 @@ Navigate two separate browser tabs or windows to the following two URLs (replaci
 http://<localhost>/index.html?this=aaabcc&other=cccdee  # Party A example.
 http://<localhost>/index.html?other=cccdee&this=aaabcc  # Party B example.
 ```
+
+(Hosting the web directory can be done with `cd web; python -m http.server 3000` and pointing your browser to http://localhost:3000/.)
+
+An example build can be found on the gh-pages branch (Firebase key not included).  Images `party_a_example.png` and `party_b_example.png` show the UI after a typical run of the protocol.
 
 ## TODOs
  - parallelism using web workers
